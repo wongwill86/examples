@@ -15,16 +15,25 @@ echo ##### Set up Docker #######################################################
 
 echo #### Label the engine ###########################################################
 {{ $dockerLabels := var "/local/docker/engine/labels" }}
-{{ if not (eq 0 (len $dockerLabels)) }}
 mkdir -p /etc/docker
 cat << EOF > /etc/docker/daemon.json
 {
-  "labels": {{ $dockerLabels | jsonEncode }}
+  "labels": [
+{{ if not (var `/local/infrakit/role/worker`) }}
+	"infrakit-role=manager"
+{{ else }}
+	"infrakit-role=worker"
+{{ end }}
+{{ if not (eq 0 (len $dockerLabels)) }}
+{{ range $index, $element := $dockerLabels }}
+  , {{$element | jsonEncode}}
+{{end}}
+{{end}}
+]
 }
 EOF
 kill -s HUP $(cat /var/run/docker.pid)  {{/* Reload the engine labels */}}
 sleep 30
-{{ end }}
 
 echo ##### Set up Docker Swarm Mode  ##################################################
 {{ if not (var "/cluster/swarm/initialized") }}

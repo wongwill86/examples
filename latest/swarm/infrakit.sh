@@ -10,9 +10,9 @@ mkdir -p {{$infrakitHome}}/plugins
 # dockerEnvs   {{ $dockerEnvs := `-e INFRAKIT_HOME=/infrakit -e INFRAKIT_PLUGINS_DIR=/infrakit/plugins`}}
 
 
-# Cluster {{ var `/cluster/name` }} size is {{ var `/cluster/size` }}
+# Cluster {{ var `/cluster/name` }} size is Manager: {{ var `/cluster/swarm/size/manager` }}, Worker: {{ var `/cluster/swarm/size/worker` }}
 
-echo "Cluster {{ var `/cluster/name` }} size is {{ var `/cluster/swarm/size` }}"
+echo "Cluster {{ var `/cluster/name` }} size is Manager: {{ var `/cluster/swarm/size/manager` }}, Worker: {{ var `/cluster/swarm/size/worker` }}"
 echo "alias infrakit='docker run --rm {{$dockerMounts}} {{$dockerEnvs}} {{$dockerImage}} infrakit'" >> /root/.bashrc
 
 alias infrakit='docker run --rm {{$dockerMounts}} {{$dockerEnvs}} {{$dockerImage}} infrakit'
@@ -26,39 +26,34 @@ docker run -d --restart always --name infrakit -p 24864:24864 {{ $dockerMounts }
        -e INFRAKIT_AWS_NAMESPACE_TAGS=infrakit.scope={{ var `/cluster/name` }} \
        -e INFRAKIT_MANAGER_BACKEND=swarm \
        -e INFRAKIT_ADVERTISE={{ var `/local/swarm/manager/logicalID` }}:24864 \
+       -e INFRAKIT_CLIENT_TIMEOUT='60s' \
        -e INFRAKIT_TAILER_PATH=/var/log/cloud-init-output.log \
        {{$dockerImage}} \
-       infrakit plugin start manager group vars aws combo swarm time tailer ingress kubernetes \
+       infrakit plugin start manager group vars aws combo swarm time tailer ingress \
        --log 5 --log-debug-V 900
 
-{{ if eq (var `/local/swarm/manager/logicalID`) (var `/cluster/swarm/join/ip`) }}
-echo "Block here to demonstrate the blocking metadata and asynchronous user update... Only on first node."
-
-# For fun -- let's write a message for the remote CLI to see
-docker run --rm {{$dockerMounts}} {{$dockerEnvs}} {{$dockerImage}} \
-       infrakit vars change -c sys/message="To continue, please enter usr/token using the CLI."
-
-echo "Please enter usr/token via the CLI"
-docker run --rm {{$dockerMounts}} {{$dockerEnvs}} {{$dockerImage}} \
-       infrakit vars cat usr/token --retry 5s --timeout 1.0h
-
-docker run --rm {{$dockerMounts}} {{$dockerEnvs}} {{$dockerImage}} \
-       infrakit vars change -c sys/message="Thank you. Continuing..."
-
-{{ else }}
 # Need time for leadership to be determined.
 sleep 30
-{{ end }}
 
 echo "Update the vars in the metadata plugin -- we put this in the vars plugin for queries later."
 docker run --rm {{$dockerMounts}} {{$dockerEnvs}} {{$dockerImage}} \
        infrakit vars change -c \
        cluster/name={{ var `/cluster/name` }} \
-       cluster/size={{ var `/cluster/size` }} \
        infrakit/config/root={{ var `/infrakit/config/root` }} \
        infrakit/docker/image={{ var `/infrakit/docker/image` }} \
        infrakit/metadata/configURL={{ var `/infrakit/metadata/configURL` }} \
        provider/image/hasDocker={{ var `/provider/image/hasDocker` }} \
+       cluster/swarm/manager/ips/0={{ var `/cluster/swarm/manager/ips/0` }} \
+       cluster/swarm/manager/ips/1={{ var `/cluster/swarm/manager/ips/1` }} \
+       cluster/swarm/manager/ips/2={{ var `/cluster/swarm/manager/ips/2` }} \
+       cluster/swarm/manager/ips/3={{ var `/cluster/swarm/manager/ips/3` }} \
+       cluster/swarm/manager/ips/4={{ var `/cluster/swarm/manager/ips/4` }} \
+       cluster/swarm/size/manager={{ var `/cluster/swarm/size/manager` }} \
+       cluster/swarm/size/worker={{ var `/cluster/swarm/size/worker` }} \
+       cluster/swarm/instanceType/manager={{ var `/cluster/swarm/instanceType/manager` }} \
+       cluster/swarm/instanceType/worker={{ var `/cluster/swarm/instanceType/worker` }} \
+       cluster/tag/user={{ var `/cluster/tag/user` }} \
+       cluster/tag/project={{ var `/cluster/tag/project` }} \
 
 
 echo "Rendering a view of the config groups.json for debugging."

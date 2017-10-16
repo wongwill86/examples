@@ -14,9 +14,14 @@ the instances it manages reside.
 
 {{/* Local variables */}}
 {{ $swarmLeaderIP := var `/cluster/swarm/join/ip` }}
-{{ $managerIPs := var `/cluster/swarm/manager/ips` }}
+{{ $managerIP0 := var `/cluster/swarm/manager/ips/0` }}
+{{ $managerIP1 := var `/cluster/swarm/manager/ips/1` }}
+{{ $managerIP2 := var `/cluster/swarm/manager/ips/2` }}
+{{ $managerIP3 := var `/cluster/swarm/manager/ips/3` }}
+{{ $managerIP4 := var `/cluster/swarm/manager/ips/4` }}
 
-{{ $workerSize := sub (var `/cluster/size`) (len $managerIPs) }}
+{{ $managerSize := int (var `/cluster/swarm/size/manager`) }}
+{{ $workerSize := int (var `/cluster/swarm/size/worker`) }}
 {{ $dockerEngine := `unix:///var/run/docker.sock` }} {{/* for this flavor to connect to */}}
 
 {{ $managerInit := cat (var `/infrakit/config/root`) `/manager-init.sh` | nospace }}
@@ -31,21 +36,50 @@ the instances it manages reside.
             "ID": "managers",
             "Properties": {
                 "Allocation": {
-                    "LogicalIDs": {{ $managerIPs | jsonEncode }}
+                    "LogicalIDs": [
+                            "{{ $managerIP0 }}"
+
+                            {{ if gt $managerSize 1 }}
+                            ,"{{ $managerIP1 }}"
+                            {{ end }}
+                            {{ if gt $managerSize 2 }}
+                            ,"{{ $managerIP2 }}"
+                            {{ end }}
+                            {{ if gt $managerSize 3 }}
+                            ,"{{ $managerIP3 }}"
+                            {{ end }}
+                            {{ if gt $managerSize 4 }}
+                            ,"{{ $managerIP4 }}"
+                            {{ end }}
+                    ]
                 },
                 "Flavor": {
                     "Plugin": "swarm/manager",
                     "Properties": {
                         "Attachments" : {
-                            "{{index $managerIPs 0}}" : [
-                                { "ID":"{{index $managerIPs 0}}", "Type":"ebs" }
-                            ],
-                            "{{index $managerIPs 1}}" : [
-                                { "ID":"{{index $managerIPs 1}}", "Type":"ebs" }
-                            ],
-                            "{{index $managerIPs 2}}" : [
-                                { "ID":"{{index $managerIPs 2}}", "Type":"ebs" }
+                            "{{ $managerIP0 }}": [
+                              { "ID": "{{ $managerIP0 }}", "Type": "ebs" }
                             ]
+                            {{ if gt $managerSize 1 }}
+                            ,"{{ $managerIP1 }}": [
+                              { "ID": "{{ $managerIP1 }}", "Type": "ebs" }
+                            ]
+                            {{ end }}
+                            {{ if gt $managerSize 2 }}
+                            ,"{{ $managerIP2 }}": [
+                              { "ID": "{{ $managerIP2 }}", "Type": "ebs" }
+                            ]
+                            {{ end }}
+                            {{ if gt $managerSize 3 }}
+                            ,"{{ $managerIP3 }}": [
+                              { "ID": "{{ $managerIP3 }}", "Type": "ebs" }
+                            ]
+                            {{ end }}
+                            {{ if gt $managerSize 4 }}
+                            ,"{{ $managerIP4 }}": [
+                              { "ID": "{{ $managerIP4 }}", "Type": "ebs" }
+                            ]
+                            {{ end }}
                         },
                         "InitScriptTemplateURL": "{{ $managerInit }}",
                         "SwarmJoinIP": "{{ $swarmLeaderIP }}",
@@ -62,7 +96,7 @@ the instances it manages reside.
     {
         "Plugin": "group",
         "Properties": {
-            "ID": "workers",
+            "ID": "workers-worker",
             "Properties": {
                 "Allocation": {
                     "Size": {{ $workerSize }}

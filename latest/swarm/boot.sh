@@ -15,16 +15,25 @@ echo ##### Set up Docker #######################################################
 
 echo #### Label the engine ###########################################################
 {{ $dockerLabels := var "/local/docker/engine/labels" }}
-{{ if not (eq 0 (len $dockerLabels)) }}
 mkdir -p /etc/docker
 cat << EOF > /etc/docker/daemon.json
 {
-  "labels": {{ $dockerLabels | jsonEncode }}
+  "labels": [
+{{ if not (var `/local/infrakit/role/worker`) }}
+	"infrakit-role=manager"
+{{ else }}
+	"infrakit-role=worker"
+{{ end }}
+{{ if not (eq 0 (len $dockerLabels)) }}
+{{ range $index, $element := $dockerLabels }}
+  , {{$element | jsonEncode}}
+{{end}}
+{{end}}
+]
 }
 EOF
 kill -s HUP $(cat /var/run/docker.pid)  {{/* Reload the engine labels */}}
 sleep 30
-{{ end }}
 
 echo ##### Set up Docker Swarm Mode  ##################################################
 {{ if not (var "/cluster/swarm/initialized") }}
@@ -32,6 +41,11 @@ echo ##### Initialize Swarm
 echo "Init swarm: $(docker swarm init --advertise-addr {{ var "/cluster/swarm/join/ip" }})"  # starts :2377
 {{ else }}
 echo ##### Joining Swarm
+# Wait for firewalls to be set up properly
+while ! nc -z -w10 {{ var "/local/docker/swarm/join/addr" | replace ":" " " }}; do
+    echo "Waiting for swarm join ip connectivity (check firewall)"
+done
+
 echo "Join Swarm: $(docker swarm join --token {{ var "/local/docker/swarm/join/token" }} {{ var "/local/docker/swarm/join/addr" }})"
 {{ end }}
 

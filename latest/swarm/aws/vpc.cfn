@@ -1,52 +1,104 @@
 {
     "AWSTemplateFormatVersion": "2010-09-09",
-    "Description": "InfraKit Demo - builds a new VPC with a Docker Swarm",
+    "Description": "InfraKit to start air-tasks in AWS",
 
     "Parameters": {
         "InfrakitConfigRoot" : {
             "Type" : "String",
             "Description" : "Root URL of the bootscript",
-            "Default" : "https://infrakit.github.io/examples/latest/swarm"
+            "Default" : "https://raw.githubusercontent.com/wongwill86/examples/air-tasks/latest/swarm/"
+        },
+        "TagFieldUser": {
+            "Description": "IAM username, also used as web auth Username",
+            "Type": "String"
+        },
+        "TagFieldProject": {
+            "Description": "i.e. what project and which run",
+            "Type": "String"
+        },
+        "WebAuthPassword": {
+            "Description": "Leave blank for no web authentication to portals",
+            "Type": "String",
+            "NoEcho": "true"
         },
         "PreinstalledDockerAMI": {
             "Description": "Pick which AMI to use; yes for preinstalled Docker; no to install the latest from get.docker.com",
             "Type": "String",
             "AllowedValues" : [ "yes","no" ],
-            "Default": "yes"
+            "Default": "no"
         },
-        "ClusterSize": {
+        "ClusterSizeManager": {
+            "Description": "Size of the cluster (1, 3, 5)",
+            "Type": "Number",
+            "AllowedValues" : [ 1, 3, 5],
+            "Default": 1
+        },
+        "ClusterSizeWorker": {
             "Description": "Size of the cluster",
             "Type": "Number",
-            "MinValue": "3",
+            "MinValue": "1",
             "MaxValue": "10"
         },
         "KeyName": {
             "Description": "Name of an existing EC2 KeyPair to enable SSH access to the instances",
             "Type": "AWS::EC2::KeyPair::KeyName",
             "MinLength": "1",
-            "ConstraintDescription": "must be the name of an existing EC2 KeyPair."
+            "ConstraintDescription": "must be the name of an existing EC2 KeyPair.",
+            "Default": "willmvw"
         },
-        "InstanceType" : {
+        "InstanceTypeManager" : {
             "Type" : "String",
-            "Description" : "EC2 HVM instance type (t2.micro, m3.medium, etc).",
+            "Description" : "Manager EC2 HVM instance type (t2.micro, m3.medium, etc).",
             "AllowedValues" : [ "t2.micro","t2.small","t2.medium" ],
             "ConstraintDescription" : "Must be a valid EC2 HVM instance type.",
             "Default" : "t2.micro"
         },
-        "BootstrapNodePrivateIP" : {
+        "InstanceTypeWorker" : {
             "Type" : "String",
-            "Description" : "Private IP of the bootstrap node",
-            "Default" : "172.31.16.101"
+            "Description" : "Worker EC2 HVM instance type (t2.micro, m3.medium, etc).",
+            "AllowedValues" : [ "t2.micro","t2.small","t2.medium" ],
+            "ConstraintDescription" : "Must be a valid EC2 HVM instance type.",
+            "Default" : "t2.micro"
         },
         "MetadataExportTemplate" : {
             "Type" : "String",
             "Description" : "URL to configure the metadata plugin",
-            "Default" : "https://infrakit.github.io/examples/latest/metadata/aws/export.ikt"
+            "Default" : "https://raw.githubusercontent.com/wongwill86/examples/air-tasks/latest/metadata/aws/export.ikt"
         },
         "Infrakit" : {
             "Type" : "String",
             "Description" : "Docker image of Infrakit",
-            "Default" : "infrakit/devbundle:latest"
+            "Default" : "infrakit/devbundle:master-2651"
+        },
+        "DockerComposeLocation" : {
+            "Type" : "String",
+            "Description" : "Location of the docker compose file to deploy to swarm",
+            "Default" : "https://raw.githubusercontent.com/wongwill86/air-tasks/master/docker/docker-compose-CeleryExecutor.yml"
+        },
+        "ManagerIP0" : {
+            "Description": "IP for manager node 0",
+            "Type" : "String",
+            "Default" : "172.31.16.100"
+        },
+        "ManagerIP1" : {
+            "Description": "IP for manager node 1 (if available)",
+            "Type" : "String",
+            "Default" : "172.31.16.101"
+        },
+        "ManagerIP2" : {
+            "Description": "IP for manager node 2 (if available)",
+            "Type" : "String",
+            "Default" : "172.31.16.102"
+        },
+        "ManagerIP3" : {
+            "Description": "IP for manager node 3 (if available)",
+            "Type" : "String",
+            "Default" : "172.31.16.103"
+        },
+        "ManagerIP4" : {
+            "Description": "IP for manager node 4 (if available)",
+            "Type" : "String",
+            "Default" : "172.31.16.104"
         }
     },
 
@@ -55,13 +107,27 @@
             "ParameterGroups" : [
                 {
                     "Label" : { "default":"Cluster Properties" },
-                    "Parameters" : [ "InstanceType", "KeyName", "ClusterSize" ]
+                    "Parameters" : [
+                        "TagFieldUser",
+                        "WebAuthPassword",
+                        "TagFieldProject",
+                        "ClusterSizeWorker",
+                        "InstanceTypeWorker",
+                        "ClusterSizeManager",
+                        "InstanceTypeManager",
+                        "DockerComposeLocation",
+                        "KeyName"
+                    ]
                 }
             ],
             "ParameterLabels" : {
-                "InstanceType" : { "default" : "Agent worker instance type?" },
+                "InstanceTypeManager" : { "default" : "Manager instance type?" },
+                "InstanceTypeWorker" : { "default" : "Worker instance type?" },
                 "KeyName" : { "default" : "Which SSH key to use?" },
-                "ClusterSize" : { "default" : "How many nodes in the cluster?" }
+                "ClusterSizeManager" : { "default" : "How many managers in the cluster?" },
+                "ClusterSizeWorker" : { "default" : "How many initial worker instances?" },
+                "TagFieldUser" : { "default" : "Who are you?" },
+                "TagFieldProject" : { "default" : "What project is this?" }
             }
         }
     },
@@ -89,13 +155,13 @@
             }
         },
 
-        "AWSRegionArch2AMIUbuntu1604NoDocker": {
-            "eu-central-1": {
-                "HVM64": "ami-3f1bd150",
+        "AWSUbuntu16NoDocker": {
+            "us-east-1": {
+                "HVM64": "ami-7765a20d",
                 "HVMG2": "NOT_SUPPORTED"
             },
-            "us-east-1": {
-                "HVM64": "ami-f4cc1de2",
+            "us-east-2": {
+                "HVM64": "ami-10547475",
                 "HVMG2": "NOT_SUPPORTED"
             },
             "us-west-1": {
@@ -130,7 +196,7 @@
         "AMISelector" : {
             "no" : {
                 "hasDocker" : "no",
-                "ami" : "AWSRegionArch2AMIUbuntu1604NoDocker",
+                "ami" : "AWSUbuntu16NoDocker",
                 "userdata" : "wget -qO- https://get.docker.com/ | sh \n"
             },
             "yes" : {
@@ -139,6 +205,31 @@
                 "userdata" : "# Docker pre-installed \n"
             }
         }
+    },
+
+    "Conditions" : {
+        "Over1Managers" : {
+            "Fn::Or" : [
+                { "Fn::Equals": [ "2", {"Ref":"ClusterSizeManager"} ] },
+                { "Fn::Equals": [ "3", {"Ref":"ClusterSizeManager"} ] },
+                { "Fn::Equals": [ "4", {"Ref":"ClusterSizeManager"} ] },
+                { "Fn::Equals": [ "5", {"Ref":"ClusterSizeManager"} ] }
+            ]
+        },
+        "Over2Managers" : {
+            "Fn::Or" : [
+                { "Fn::Equals": [ "3", {"Ref":"ClusterSizeManager"} ] },
+                { "Fn::Equals": [ "4", {"Ref":"ClusterSizeManager"} ] },
+                { "Fn::Equals": [ "5", {"Ref":"ClusterSizeManager"} ] }
+            ]
+        },
+        "Over3Managers" : {
+            "Fn::Or" : [
+                { "Fn::Equals": [ "4", {"Ref":"ClusterSizeManager"} ] },
+                { "Fn::Equals": [ "5", {"Ref":"ClusterSizeManager"} ] }
+            ]
+        },
+        "Over4Managers" : { "Fn::Equals": [ "5", {"Ref":"ClusterSizeManager"} ] }
     },
 
     "Resources": {
@@ -240,6 +331,18 @@
                     },
                     {
                         "IpProtocol": "tcp",
+                        "FromPort": "443",
+                        "ToPort": "443",
+                        "CidrIp": "0.0.0.0/0"
+                    },
+                    {
+                        "IpProtocol": "tcp",
+                        "FromPort": "80",
+                        "ToPort": "80",
+                        "CidrIp": "0.0.0.0/0"
+                    },
+                    {
+                        "IpProtocol": "tcp",
                         "FromPort": "24864",
                         "ToPort": "24864",
                         "CidrIp": "0.0.0.0/0"
@@ -274,7 +377,41 @@
                     "Statement": [
                         {
                             "Effect": "Allow",
-                            "Action": "*",
+                            "Action": [
+                                "cloudformation:DescribeStacks",
+                                "cloudformation:DescribeStackEvents",
+                                "cloudformation:DescribeStackResource",
+                                "cloudformation:DescribeStackResources",
+                                "cloudformation:GetTemplate",
+                                "cloudformation:List*",
+                                "ec2:*",
+                                "elasticloadbalancing:*",
+                                "cloudwatch:*",
+                                "autoscaling:*",
+                                "sqs:*",
+                                "s3:*",
+                                "ecr:GetAuthorizationToken",
+                                "ecr:BatchCheckLayerAvailability",
+                                "ecr:GetDownloadUrlForLayer",
+                                "ecr:GetRepositoryPolicy",
+                                "ecr:DescribeRepositories",
+                                "ecr:ListImages",
+                                "ecr:DescribeImages",
+                                "ecr:BatchGetImage",
+                                "iam:GetInstanceProfile",
+                                "iam:GetRole",
+                                "iam:GetRolePolicy",
+                                "iam:ListAttachedRolePolicies",
+                                "iam:ListRolePolicies",
+                                "iam:ListInstanceProfiles",
+                                "iam:PassRole",
+                                "dynamodb:BatchGetItem",
+                                "dynamodb:DescribeTable",
+                                "dynamodb:GetItem",
+                                "dynamodb:Query",
+                                "dynamodb:Scan",
+                                "dynamodb:UpdateTable"
+                            ],
                             "Resource": "*"
                         }
                     ]
@@ -295,7 +432,7 @@
             }
         },
 
-        "Volume1" : {
+        "Volume0" : {
             "Type":"AWS::EC2::Volume",
             "Properties" : {
                 "AvailabilityZone" :  { "Fn::GetAtt" : [ "Subnet1", "AvailabilityZone" ] },
@@ -311,7 +448,30 @@
                     },
                     {
                         "Key" : "docker-infrakit-volume",
-                        "Value" : "172.31.16.101"
+                        "Value" : { "Ref" : "ManagerIP0" }
+                    }
+                ]
+            }
+        },
+
+        "Volume1" : {
+            "Type":"AWS::EC2::Volume",
+            "Condition": "Over1Managers",
+            "Properties" : {
+                "AvailabilityZone" :  { "Fn::GetAtt" : [ "Subnet1", "AvailabilityZone" ] },
+                "Size" : 4,
+                "Tags" : [
+                    {
+                        "Key" : "Name",
+                        "Value" : { "Fn::Join": [ "-", [ { "Ref": "AWS::StackName"}, "EBS" ] ] }
+                    },
+                    {
+                        "Key" : "infrakit.scope",
+                        "Value" : {"Ref": "AWS::StackName"}
+                    },
+                    {
+                        "Key" : "docker-infrakit-volume",
+                        "Value" : { "Ref" : "ManagerIP1" }
                     }
                 ]
             }
@@ -319,6 +479,7 @@
 
         "Volume2" : {
             "Type":"AWS::EC2::Volume",
+            "Condition": "Over2Managers",
             "Properties" : {
                 "AvailabilityZone" :  { "Fn::GetAtt" : [ "Subnet1", "AvailabilityZone" ] },
                 "Size" : 4,
@@ -333,7 +494,7 @@
                     },
                     {
                         "Key" : "docker-infrakit-volume",
-                        "Value" : "172.31.16.102"
+                        "Value" : { "Ref" : "ManagerIP2" }
                     }
                 ]
             }
@@ -341,6 +502,7 @@
 
         "Volume3" : {
             "Type":"AWS::EC2::Volume",
+            "Condition": "Over3Managers",
             "Properties" : {
                 "AvailabilityZone" :  { "Fn::GetAtt" : [ "Subnet1", "AvailabilityZone" ] },
                 "Size" : 4,
@@ -355,7 +517,30 @@
                     },
                     {
                         "Key" : "docker-infrakit-volume",
-                        "Value" : "172.31.16.103"
+                        "Value" : { "Ref" : "ManagerIP3" }
+                    }
+                ]
+            }
+        },
+
+        "Volume4" : {
+            "Type":"AWS::EC2::Volume",
+            "Condition": "Over4Managers",
+            "Properties" : {
+                "AvailabilityZone" :  { "Fn::GetAtt" : [ "Subnet1", "AvailabilityZone" ] },
+                "Size" : 4,
+                "Tags" : [
+                    {
+                        "Key" : "Name",
+                        "Value" : { "Fn::Join": [ "-", [ { "Ref": "AWS::StackName"}, "EBS" ] ] }
+                    },
+                    {
+                        "Key" : "infrakit.scope",
+                        "Value" : {"Ref": "AWS::StackName"}
+                    },
+                    {
+                        "Key" : "docker-infrakit-volume",
+                        "Value" : { "Ref" : "ManagerIP4" }
                     }
                 ]
             }
@@ -366,7 +551,7 @@
             "Properties" : {
                 "Device" : "/dev/xvdf",
                 "InstanceId" : {"Ref": "BootstrapInstance"},
-                "VolumeId" : {"Ref": "Volume1" }
+                "VolumeId" : {"Ref": "Volume0" }
             }
         },
 
@@ -375,7 +560,7 @@
             "Type" : "AWS::EC2::Instance",
             "Properties" : {
                 "KeyName" : { "Ref" : "KeyName" },
-                "InstanceType" : { "Ref" : "InstanceType" },
+                "InstanceType" : { "Ref" : "InstanceTypeManager" },
                 "IamInstanceProfile" : { "Ref" : "InstanceProfile" },
                 "NetworkInterfaces" : [
                     {
@@ -383,7 +568,7 @@
                         "Description" : "main interface",
                         "DeleteOnTermination" : true,
                         "AssociatePublicIpAddress" : true,
-                        "PrivateIpAddress" : { "Ref": "BootstrapNodePrivateIP" },
+                        "PrivateIpAddress" : { "Ref" : "ManagerIP0" },
                         "SubnetId" : { "Ref" : "Subnet1" },
                         "GroupSet" : [ {"Ref" : "SecurityGroup"} ]
                     }
@@ -393,7 +578,7 @@
                     "Fn::FindInMap": [
                         { "Fn::FindInMap" : [ "AMISelector", { "Ref" : "PreinstalledDockerAMI" }, "ami" ] },
                         { "Ref": "AWS::Region" },
-                        { "Fn::FindInMap": ["AWSInstanceType2Arch", {"Ref" : "InstanceType"}, "Arch"]}
+                        { "Fn::FindInMap": ["AWSInstanceType2Arch", {"Ref" : "InstanceTypeManager"}, "Arch"]}
                     ]
                 },
                 "UserData" : {
@@ -410,8 +595,19 @@
 			    {"Ref":"Infrakit"},
                             " infrakit util init --group-id managers --start combo --start swarm ",
                                " --var /cluster/provider=aws",
+                               " --var /cluster/tag/user=", {"Ref": "TagFieldUser"},
+                               " --var /cluster/tag/project=", {"Ref": "TagFieldProject"},
                                " --var /cluster/name=", {"Ref":"AWS::StackName"},
-                               " --var /cluster/size=", {"Ref":"ClusterSize"},
+                               " --var /cluster/swarm/manager/ips/0=", { "Ref" : "ManagerIP0" },
+                               " --var /cluster/swarm/manager/ips/1=", { "Ref" : "ManagerIP1" },
+                               " --var /cluster/swarm/manager/ips/2=", { "Ref" : "ManagerIP2" },
+                               " --var /cluster/swarm/manager/ips/3=", { "Ref" : "ManagerIP3" },
+                               " --var /cluster/swarm/manager/ips/4=", { "Ref" : "ManagerIP4" },
+                               " --var /cluster/swarm/deploy/compose=", {"Ref":"DockerComposeLocation"},
+                               " --var /cluster/size/manager=", {"Ref":"ClusterSizeManager"},
+                               " --var /cluster/size/worker=", {"Ref":"ClusterSizeWorker"},
+                               " --var /cluster/instanceType/manager=", {"Ref":"InstanceTypeManager"},
+                               " --var /cluster/instanceType/worker=", {"Ref":"InstanceTypeWorker"},
                                " --var /infrakit/config/root=", {"Ref":"InfrakitConfigRoot"},
                                " --var /infrakit/metadata/configURL=", {"Ref":"MetadataExportTemplate"},
                                " --var /provider/image/hasDocker=", {
@@ -419,7 +615,20 @@
                                        },
                                " --var /infrakit/docker/image=", {"Ref":"Infrakit"}, " ",
                                {"Ref":"InfrakitConfigRoot"}, "/groups.json",
-                               " | tee /var/lib/infrakit.boot | sh \n"
+                               " | tee /var/lib/infrakit.boot | sh \n",
+                            "set -e \n",
+                            "echo '", { "Ref" : "TagFieldUser" }, "' | docker secret create basic_auth_username - \n",
+                            "echo '", { "Ref" : "WebAuthPassword" }, "' | docker secret create basic_auth_password - \n",
+                            "echo '' | docker secret create ssl_certificate - \n",
+                            "echo '' | docker secret create ssl_certficate_key - \n",
+                            "export INFRAKIT_GROUPS_URL=", { "Ref": "InfrakitConfigRoot" }, "\n",
+                            "export INFRAKIT_IMAGE=", {"Ref":"Infrakit"}, "\n",
+                            "while [ $(docker node ls -f 'role=manager' -q | wc -l ) -lt ", { "Ref": "ClusterSizeManager" }, " ]; do\n",
+                               "echo 'Waiting for managers to be online before deploy'\n",
+                               "sleep 10;\n",
+                            "done\n",
+                            "wget -O compose.yml ", { "Ref": "DockerComposeLocation" }, "\n",
+                            "docker stack deploy -c compose.yml ", { "Ref": "AWS::StackName" }
                         ]]
                     }
                 },
@@ -443,6 +652,14 @@
                     {
                         "Key" : "infrakit.role",
                         "Value" : "managers"
+                    },
+                    {
+                        "Key" : "User",
+                        "Value" : { "Ref": "TagFieldUser" }
+                    },
+                    {
+                        "Key" : "Project",
+                        "Value" : { "Ref": "TagFieldProject" }
                     }
                 ]
             }

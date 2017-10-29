@@ -9,6 +9,9 @@ Instance plugin config for managers on Google
         "NamePrefix": "{{ var `/cluster/name` }}-manager",
         "Network": "{{ var `/cluster/name` }}-network",
         "Tags": [
+          "princeton-access",
+          "http-server",
+          "https-server"
         ],
         "Metadata": [
             {

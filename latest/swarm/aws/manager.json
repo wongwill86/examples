@@ -9,7 +9,9 @@ Instance plugin config for managers on AWS
         "Tags": {
             "infrakit.clusterName": "{{ var `/cluster/name` }}",
             "infrakit.role" : "managers",
-            "Name": "{{ var `/cluster/name` }}-manager"
+            "Name": "{{ var `/cluster/name` }}-manager",
+            "User" : "{{ var "/cluster/tag/user" }}",
+            "Project" : "{{ var "/cluster/tag/project" }}"
         },
         "RunInstancesInput": {
             "BlockDeviceMappings": null,
@@ -19,7 +21,7 @@ Instance plugin config for managers on AWS
                 "Name": null
             },
             "ImageId": "{{ var `/local/amiID` }}",
-            "InstanceType": "{{ var `/local/instanceType` }}",
+            "InstanceType": "{{ var `/cluster/instanceType/manager` }}",
             "KeyName": "{{ var `/local/keyName` }}",
             "NetworkInterfaces": [
                 {

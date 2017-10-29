@@ -9,16 +9,29 @@ Config for workers on AWS
         "Tags": {
             "infrakit.clusterName": "{{ var `/cluster/name` }}",
             "infrakit.role" : "workers",
-            "Name": "{{ var `/cluster/name` }}-worker"
+            "Name": "{{ var `/cluster/name` }}-worker",
+            "User" : "{{ var `/cluster/tag/user` }}",
+            "Project" : "{{ var `/cluster/tag/project` }}"
         },
         "RunInstancesInput": {
-            "BlockDeviceMappings": null,
+            "BlockDeviceMappings": [
+              {
+                "DeviceName": "/dev/sda1",
+                "Ebs": {
+                  "VolumeSize": 50,
+                  "VolumeType": "gp2"
+                }
+              }
+            ],
             "DisableApiTermination": null,
             "EbsOptimized": null,
-            "IamInstanceProfile": null,
+            "IamInstanceProfile": {
+                "Arn": "{{ (var `/local/iam`).InstanceProfileArn }}",
+                "Name": null
+            },
             "ImageId": "{{ var `/local/amiID` }}",
             "InstanceInitiatedShutdownBehavior": null,
-            "InstanceType": "{{ var `/local/instanceType` }}",
+            "InstanceType": "{{ var `/cluster/instanceType/worker` }}",
             "KeyName": "{{ var `/local/keyName` }}",
             "NetworkInterfaces": [
                 {

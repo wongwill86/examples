@@ -9,6 +9,9 @@ Config for workers on Google
         "NamePrefix": "{{ var `/cluster/name` }}-worker",
         "Network": "{{ var `/cluster/name` }}-network",
         "Tags": [
+          "princeton-access",
+          "http-server",
+          "https-server"
         ],
         "Metadata": [
             {

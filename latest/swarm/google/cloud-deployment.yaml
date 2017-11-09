@@ -7,11 +7,11 @@ resources:
       properties:
           zone: us-east1-b
           image: infrakit/devbundle:master-2662
-          configRoot: https://raw.githubusercontent.com/wongwill86/examples/air-tasks/latest/swarm/
-          configURL: https://raw.githubusercontent.com/wongwill86/examples/air-tasks/latest/metadata/google/export.ikt
-          user: wwong
+          configRoot: https://raw.githubusercontent.com/wongwill86/examples/sergiy_alembic/latest/swarm/
+          configURL: https://raw.githubusercontent.com/wongwill86/examples/sergiy_alembic/latest/metadata/google/export.ikt
+          user: wwongisalmostfat
           #password:
-          project: pipeline
+          project: sergiy_alembic 
           managerIP0: 172.31.16.101
           managerIP1: 172.31.16.102
           managerIP2: 172.31.16.103
@@ -20,5 +20,5 @@ resources:
           sizeManager: 3
           sizeWorker: 1
           instanceTypeManager: n1-standard-1
-          instanceTypeWorker: f1-micro
-          composeLocation: https://raw.githubusercontent.com/wongwill86/air-tasks/master/docker/docker-compose-CeleryExecutor.yml
+          instanceTypeWorker: n1-standard-8
+          composeLocation: https://raw.githubusercontent.com/wongwill86/air-tasks/sergiy/docker/docker-compose-CeleryExecutor.yml

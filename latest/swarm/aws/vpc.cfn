@@ -68,7 +68,7 @@
         "Infrakit" : {
             "Type" : "String",
             "Description" : "Docker image of Infrakit",
-            "Default" : "infrakit/devbundle:master-2651"
+            "Default" : "infrakit/devbundle:master-2662"
         },
         "DockerComposeLocation" : {
             "Type" : "String",

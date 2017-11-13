@@ -589,6 +589,10 @@
                             {
                                 "Fn::FindInMap": [ "AMISelector", { "Ref" : "PreinstalledDockerAMI" }, "userdata" ]
                             },
+                            "export INFRAKIT_GROUPS_URL=", { "Ref": "InfrakitConfigRoot" }, "\n",
+                            "export INFRAKIT_IMAGE=", {"Ref":"Infrakit"}, "\n",
+                            "echo INFRAKIT_GROUPS_URL=", { "Ref": "InfrakitConfigRoot" }, " >> /etc/environment \n",
+                            "echo INFRAKIT_IMAGE=", {"Ref":"Infrakit"}, " >> /etc/environment \n",
                             "mkdir -p /infrakit\n",
                             "docker swarm init\n",
                             "docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v /infrakit:/infrakit ",
@@ -621,10 +625,6 @@
                             "echo '", { "Ref" : "WebAuthPassword" }, "' | docker secret create basic_auth_password - \n",
                             "echo '' | docker secret create ssl_certificate - \n",
                             "echo '' | docker secret create ssl_certificate_key - \n",
-                            "export INFRAKIT_GROUPS_URL=", { "Ref": "InfrakitConfigRoot" }, "\n",
-                            "export INFRAKIT_IMAGE=", {"Ref":"Infrakit"}, "\n",
-                            "echo INFRAKIT_GROUPS_URL=", { "Ref": "InfrakitConfigRoot" }, " >> /etc/environment \n",
-                            "echo INFRAKIT_IMAGE=", {"Ref":"Infrakit"}, " >> /etc/environment \n",
                             "while [ $(docker node ls -f 'role=manager' -q | wc -l ) -lt ", { "Ref": "ClusterSizeManager" }, " ]; do\n",
                                "echo 'Waiting for managers to be online before deploy'\n",
                                "sleep 10;\n",

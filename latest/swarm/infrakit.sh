@@ -18,12 +18,11 @@ alias infrakit='docker run --rm {{$dockerMounts}} {{$dockerEnvs}} {{$dockerImage
 echo "Starting up infrakit  ######################"
 docker run -d --restart always --name infrakit -p 24864:24864 {{ $dockerMounts }} {{ $dockerEnvs }} \
        -v /var/log/:/var/log \
-       \{{ if eq (var `/cluster/provider`) "aws" }}
        -e INFRAKIT_AWS_STACKNAME={{ var `/cluster/name` }} \
        -e INFRAKIT_AWS_METADATA_POLL_INTERVAL=300s \
        -e INFRAKIT_AWS_METADATA_TEMPLATE_URL={{ var `/infrakit/metadata/configURL` }} \
        -e INFRAKIT_AWS_NAMESPACE_TAGS=infrakit.scope={{ var `/cluster/name` }} \
-       {{ end }}
+       -e INFRAKIT_GOOGLE_NAMESPACE_TAGS=infrakit.scope={{ var `/cluster/name` }} \
        -e INFRAKIT_MANAGER_BACKEND=swarm \
        -e INFRAKIT_ADVERTISE={{ var `/local/swarm/manager/logicalID` }}:24864 \
        -e INFRAKIT_CLIENT_TIMEOUT='60s' \

@@ -34,7 +34,7 @@ the instances it manages reside.
     {
         "Plugin": "group",
         "Properties": {
-            "ID": "managers-{{ var `/cluster/name` }}",
+            "ID": "managers",
             "Properties": {
                 "Allocation": {
                     "LogicalIDs": [
@@ -97,7 +97,7 @@ the instances it manages reside.
     {
         "Plugin": "group",
         "Properties": {
-            "ID": "workers-{{ var `/cluster/name` }}-worker",
+            "ID": "workers-worker",
             "Properties": {
                 "Allocation": {
                     "Size": {{ $workerSize }}

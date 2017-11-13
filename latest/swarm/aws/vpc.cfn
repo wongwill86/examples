@@ -620,7 +620,7 @@
                             "echo '", { "Ref" : "TagFieldUser" }, "' | docker secret create basic_auth_username - \n",
                             "echo '", { "Ref" : "WebAuthPassword" }, "' | docker secret create basic_auth_password - \n",
                             "echo '' | docker secret create ssl_certificate - \n",
-                            "echo '' | docker secret create ssl_certficate_key - \n",
+                            "echo '' | docker secret create ssl_certificate_key - \n",
                             "export INFRAKIT_GROUPS_URL=", { "Ref": "InfrakitConfigRoot" }, "\n",
                             "export INFRAKIT_IMAGE=", {"Ref":"Infrakit"}, "\n",
                             "echo INFRAKIT_GROUPS_URL=", { "Ref": "InfrakitConfigRoot" }, " >> /etc/environment \n",

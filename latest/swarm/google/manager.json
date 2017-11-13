@@ -24,7 +24,7 @@ Instance plugin config for managers on Google
               "value": "worker"
             }
         ],
-        "MachineType": "{{ var `/local/instanceType` }}",
+        "MachineType": "{{ var `/cluster/instanceType/manager` }}",
         "Disks": [{
           "Boot": true,
           "SizeGb": 30,

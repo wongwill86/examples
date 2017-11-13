@@ -24,7 +24,7 @@ Config for workers on Google
               "value": "worker"
             }
         ],
-        "MachineType": "{{ var `/local/instanceType` }}",
+        "MachineType": "{{ var `/cluster/instanceType/worker` }}",
         "Disks": [{
           "Boot": true,
           "SizeGb": 30,

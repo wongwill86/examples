@@ -9,6 +9,7 @@ Instance plugin config for managers on Google
         "NamePrefix": "{{ var `/cluster/name` }}-manager",
         "Network": "{{ var `/cluster/name` }}-network",
         "Tags": [
+          "cluster-{{ var `/cluster/name` }}-network",
           "princeton-access",
           "http-server",
           "https-server"
@@ -23,7 +24,7 @@ Instance plugin config for managers on Google
               "value": "worker"
             }
         ],
-        "MachineType": "{{ var `/local/instanceType` }}",
+        "MachineType": "{{ var `/cluster/instanceType/manager` }}",
         "Disks": [{
           "Boot": true,
           "SizeGb": 30,

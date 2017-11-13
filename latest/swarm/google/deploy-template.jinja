@@ -65,6 +65,10 @@ resources:
                             docker secret create ssl_certificate -
                         export INFRAKIT_GROUPS_URL={{ properties["configURL"] }}
                         export INFRAKIT_IMAGE={{ properties["image"] }}
+                        export STACK_NAME={{ env["deployment"] }}
+                        echo INFRAKIT_GROUPS_URL={{ properties["configURL"] }} >> /etc/environment
+                        echo INFRAKIT_IMAGE={{ properties["image"] }} >> /etc/environment
+                        echo STACK_NAME={{ env["deployment"] }} >> /etc/environment
                         while [ $(docker node ls -f 'role=manager' -q | wc -l ) -lt {{ properties["sizeManager"] }} ]; do
                            echo 'Waiting for managers to be online before deploy';
                            sleep 10;

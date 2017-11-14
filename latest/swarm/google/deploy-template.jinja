@@ -109,6 +109,7 @@ resources:
       properties:
           allowed:
               - IPProtocol: tcp
+              - IPProtocol: udp
           sourceRanges:
               - 172.31.16.0/20
           network: $(ref.{{ env["deployment"] }}-network.selfLink)

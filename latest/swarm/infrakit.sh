@@ -58,6 +58,9 @@ docker run --rm {{$dockerMounts}} {{$dockerEnvs}} {{$dockerImage}} \
        cluster/tag/user={{ var `/cluster/tag/user` }} \
        cluster/tag/project={{ var `/cluster/tag/project` }} \
 
+docker run --rm {{$dockerMounts}} {{$dockerEnvs}} {{$dockerImage}} \
+	infrakit remote set manager-cluster \
+	{{ list (var `/cluster/swarm/manager/ips/0`) (var `/cluster/swarm/manager/ips/1`) (var `/cluster/swarm/manager/ips/2`) (var `/cluster/swarm/manager/ips/3`) (var `/cluster/swarm/manager/ips/4`) | join ":24864," }}:24864
 
 echo "Rendering a view of the config groups.json for debugging."
 docker run --rm {{$dockerMounts}} {{$dockerEnvs}} {{$dockerImage}} infrakit template {{var `/infrakit/config/root`}}/groups.json

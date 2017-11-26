@@ -1,13 +1,21 @@
 {{ source "common.ikt" }}
 
+# add docker ce repoistory
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
+apt-key fingerprint 0EBFCD88
+add-apt-repository \
+   "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
+   $(lsb_release -cs) \
+   stable"
+
 apt-get update -y
 sudo DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" dist-upgrade
 apt-get install -y jq
 
-# nvidia-docker only supports stable docker releases
-export CHANNEL=stable
-wget -qO- https://get.docker.com/ | sh
-unset CHANNEL
+# nvidia-docker only supports stable docker releases, can't use script
+#wget -qO- https://get.docker.com/ | sh
+
+apt install docker-ce
 
 sudo usermod -aG docker {{ var "/local/docker/user" }}
 

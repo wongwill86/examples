@@ -16,7 +16,7 @@ Config for workers on Google
         ],
         "guestAccelerator": [
           {
-            "acceleratorType": "nvidia-tesla-k80",
+            "acceleratorType": "https://www.googleapis.com/compute/v1/projects/neuromancer-seung-import/zones/us-east1-d/acceleratorTypes/nvidia-tesla-k80",
             "acceleratorCount": 1
           }
         ],

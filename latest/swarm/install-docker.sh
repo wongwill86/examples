@@ -4,7 +4,10 @@ apt-get update -y
 sudo DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" dist-upgrade
 apt-get install -y jq
 
+# nvidia-docker only supports stable docker releases
+export CHANNEL=stable
 wget -qO- https://get.docker.com/ | sh
+unset CHANNEL
 
 sudo usermod -aG docker {{ var "/local/docker/user" }}
 

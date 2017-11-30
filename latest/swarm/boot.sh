@@ -29,7 +29,12 @@ cat << EOF > /etc/docker/daemon.json
   , {{$element | jsonEncode}}
 {{end}}
 {{end}}
-]
+  ],
+  "log-driver": "json-file",
+  "log-opts": {
+    "max-size": "10m",
+    "max-file": 20
+  }
 }
 EOF
 kill -s HUP $(cat /var/run/docker.pid)  {{/* Reload the engine labels */}}

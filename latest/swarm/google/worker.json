@@ -29,7 +29,7 @@ Config for workers on Google
           "Boot": true,
           "SizeGb": 100,
           "Image": "https://www.googleapis.com/compute/v1/projects/ubuntu-os-cloud/global/images/ubuntu-1604-xenial-v20171011",
-          "Type": "pd"
+          "Type": "pd-standard"
         }],
         "Scopes": [
           "https://www.googleapis.com/auth/servicecontrol",

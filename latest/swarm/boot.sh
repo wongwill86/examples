@@ -10,9 +10,6 @@ set -o xtrace
 # Only for managers
 {{ if not (var "/local/infrakit/role/worker") }} {{ include "setup-volume.sh" }} {{ end }}
 
-echo ##### Set up Docker #############################################################
-{{ if var "/local/install/docker" }} {{ include "install-docker.sh" }} {{ end }}
-
 echo #### Label the engine ###########################################################
 {{ $dockerLabels := var "/local/docker/engine/labels" }}
 mkdir -p /etc/docker
@@ -37,7 +34,11 @@ cat << EOF > /etc/docker/daemon.json
   }
 }
 EOF
-kill -s HUP $(cat /var/run/docker.pid)  {{/* Reload the engine labels */}}
+
+
+echo ##### Set up Docker #############################################################
+{{ if var "/local/install/docker" }} {{ include "install-docker.sh" }} {{ end }}
+
 sleep 30
 
 echo ##### Set up Docker Swarm Mode  ##################################################

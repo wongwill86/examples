@@ -32,6 +32,7 @@ Config for workers on Google
           "Type": "pd-ssd"
         },
         {
+          "Boot": false,
           "SizeGb": 375,
           "Type": "local-ssd"
         }],

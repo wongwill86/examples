@@ -34,6 +34,7 @@ Config for workers on Google
         {
           "Boot": false,
           "SizeGb": 375,
+          "Image": "https://www.googleapis.com/compute/v1/projects/neuromancer-seung-import/global/images/blank-local-ssd",
           "Type": "local-ssd"
         }],
         "Scopes": [

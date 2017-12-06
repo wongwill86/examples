@@ -27,12 +27,9 @@ Config for workers on Google
         "MachineType": "{{ var `/cluster/instanceType/worker` }}",
         "Disks": [{
           "Boot": true,
-          "SizeGb": 100,
+          "SizeGb": 200,
           "Image": "https://www.googleapis.com/compute/v1/projects/ubuntu-os-cloud/global/images/ubuntu-1604-xenial-v20171011",
-          "Type": "pd-standard"
-        }, {
-          "SizeGb": 375,
-          "Type": "ssd"
+          "Type": "pd-ssd"
         }],
         "Scopes": [
           "https://www.googleapis.com/auth/servicecontrol",

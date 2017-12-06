@@ -29,6 +29,10 @@ Config for workers on Google
           "Boot": true,
           "SizeGb": 200,
           "Image": "https://www.googleapis.com/compute/v1/projects/ubuntu-os-cloud/global/images/ubuntu-1604-xenial-v20171011",
+          "Type": "pd-ssd"
+        },
+        {
+          "SizeGb": 375,
           "Type": "local-ssd"
         }],
         "Scopes": [

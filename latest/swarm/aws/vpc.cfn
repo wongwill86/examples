@@ -56,7 +56,7 @@
         "InstanceTypeWorker" : {
             "Type" : "String",
             "Description" : "Worker EC2 HVM instance type (t2.micro, m3.medium, etc).",
-            "AllowedValues" : [ "t2.micro","t2.small","t2.medium" ],
+            "AllowedValues" : [ "t2.micro","t2.small","t2.medium", "p2.xlarge" ],
             "ConstraintDescription" : "Must be a valid EC2 HVM instance type.",
             "Default" : "t2.micro"
         },

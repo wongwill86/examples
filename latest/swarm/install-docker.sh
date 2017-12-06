@@ -9,7 +9,7 @@ add-apt-repository \
    stable"
 
 apt-get update -y
-sudo DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" dist-upgrade
+DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" dist-upgrade
 apt-get install -y jq
 
 # nvidia-docker only supports stable docker releases, can't use script

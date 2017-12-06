@@ -8,4 +8,4 @@ curl -s -L https://nvidia.github.io/nvidia-docker/ubuntu16.04/amd64/nvidia-docke
 apt-get update
 
 # Install nvidia-docker2 and reload the Docker daemon configuration
-apt-get install -y nvidia-docker2
+DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" install nvidia-docker2

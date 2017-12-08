@@ -6,6 +6,8 @@ apt-get install -y jq
 
 wget -qO- https://get.docker.com/ | sh
 
+sudo usermod -aG docker {{ var "/local/docker/user" }}
+
 # For Upstart ONLY (pre- Ubuntu 15.04)
 if [ -d "/var/log/upstart" ]; then
     # Upstart
@@ -22,7 +24,5 @@ else
 
 	systemctl daemon-reload
 fi
-
-sudo usermod -aG docker {{ var "/local/docker/user" }}
 
 # will restart to pick up service changes in boot script

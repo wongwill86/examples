@@ -197,7 +197,7 @@
             "no" : {
                 "hasDocker" : "no",
                 "ami" : "AWSUbuntu16NoDocker",
-                "userdata" : "wget -qO- https://get.docker.com/ | sh \n"
+                "userdata" : "curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - &&\napt-key fingerprint 0EBFCD88 &&\nadd-apt-repository 'deb [arch=amd64] https://download.docker.com/linux/ubuntu `lsb_release -cs` stable' &&\napt-get update &&\napt-get install docker-ce -y\n"
             },
             "yes" : {
                 "hasDocker" : "yes",

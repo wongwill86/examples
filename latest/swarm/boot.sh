@@ -15,6 +15,7 @@ echo ##### Set up Docker #######################################################
 
 echo #### Label the engine ###########################################################
 {{ $dockerLabels := var "/local/docker/engine/labels" }}
+mkdir -p /etc/docker
 cat << EOF > /etc/docker/daemon.json
 {
   "labels": [

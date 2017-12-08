@@ -10,7 +10,7 @@ sudo add-apt-repository ppa:graphics-drivers/ppa -y
 apt-get update
 
 if ! nvidia-smi; then
-  apt install nvidia-387
+  apt install nvidia-387 -y
 else
   echo 'nvidia-smi already installed, not installing drivers'
 fi

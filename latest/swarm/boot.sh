@@ -16,18 +16,9 @@ echo ##### Set up Docker #######################################################
 mkdir -p /etc/docker
 echo {} > /etc/docker/daemon.json
 
-# Try to find NVIDIA devices, this may override /etc/docker/daemon.json
-if lspci | grep NVIDIA; then
-	echo "Found NVIDIA devices"
-	{{ include "install-nvidia-docker.sh" }}
-fi
-
-# Move original daemon.json to a safe location to prepare for merge
-mv /etc/docker/daemon.json /etc/docker/daemon-original.json
-
 echo #### Label the engine ###########################################################
 {{ $dockerLabels := var "/local/docker/engine/labels" }}
-cat << EOF > /etc/docker/daemon-infrakit.json
+cat << EOF > /etc/docker/daemon.json
 {
   "labels": [
 {{ if not (var `/local/infrakit/role/worker`) }}
@@ -44,8 +35,16 @@ cat << EOF > /etc/docker/daemon-infrakit.json
 }
 EOF
 
-# Merge original daemon-original.json with new infrakit labels deamon-infrakit.json
-jq -s '.[0] * .[1] * .[2]' /etc/docker/daemon-original.json /etc/docker/daemon-infrakit.json /etc/docker/daemon.json.dpkg-dist > /etc/docker/daemon.json
+# Try to find NVIDIA devices, this may override /etc/docker/daemon.json
+if lspci | grep NVIDIA; then
+	echo "Found NVIDIA devices"
+	{{ include "install-nvidia-docker.sh" }}
+	# Move original daemon.json to a safe location to prepare for merge
+	mv /etc/docker/daemon.json /etc/docker/daemon-original.json
+
+	# Merge original daemon-original.json with new infrakit labels deamon-infrakit.json
+	jq -s '.[0] * .[1]' /etc/docker/daemon-original.json /etc/docker/daemon.json.dpkg-dist > /etc/docker/daemon.json
+fi
 
 kill -s HUP $(cat /var/run/docker.pid)  {{/* Reload the engine labels */}}
 sleep 30

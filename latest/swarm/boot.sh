@@ -39,6 +39,7 @@ cat << EOF > /etc/docker/daemon.json
 }
 EOF
 
+systemctl daemon-reload
 service docker restart
 echo "Wait for Docker to come up"
 sleep 30

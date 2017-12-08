@@ -1,6 +1,6 @@
 {{ source "common.ikt" }}
 
-# add docker ce repoistory
+# add docker ce repository
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
 apt-key fingerprint 0EBFCD88
 add-apt-repository \

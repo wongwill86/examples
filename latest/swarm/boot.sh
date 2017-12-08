@@ -13,9 +13,6 @@ set -o xtrace
 echo ##### Set up Docker #############################################################
 {{ if var "/local/install/docker" }} {{ include "install-docker.sh" }} {{ end }}
 
-mkdir -p /etc/docker
-echo {} > /etc/docker/daemon.json
-
 echo #### Label the engine ###########################################################
 {{ $dockerLabels := var "/local/docker/engine/labels" }}
 cat << EOF > /etc/docker/daemon.json

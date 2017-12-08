@@ -45,7 +45,7 @@ cat << EOF > /etc/docker/daemon-infrakit.json
 EOF
 
 # Merge original daemon-original.json with new infrakit labels deamon-infrakit.json
-jq -s '.[0] * .[1]' /etc/docker/daemon-original.json /etc/docker/daemon-infrakit.json > /etc/docker/daemon.json
+jq -s '.[0] * .[1] * .[2]' /etc/docker/daemon-original.json /etc/docker/daemon-infrakit.json /etc/docker/daemon.json.dpkg-dist > /etc/docker/daemon.json
 
 kill -s HUP $(cat /var/run/docker.pid)  {{/* Reload the engine labels */}}
 sleep 30

@@ -20,6 +20,7 @@ else
     ExecStart=/usr/bin/dockerd
     ''' > /etc/systemd/system/docker.service.d/override.conf
 
+	systemctl daemon-reload
 fi
 
 sudo usermod -aG docker {{ var "/local/docker/user" }}

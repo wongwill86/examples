@@ -25,4 +25,4 @@ else
 	systemctl daemon-reload
 fi
 
-# will restart to pick up service changes in boot script
+# will restart to pick up service changes in boot.sh script

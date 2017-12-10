@@ -14,12 +14,6 @@ Config for workers on Google
           "http-server",
           "https-server"
         ],
-        "guestAccelerator": [
-          {
-            "acceleratorType": "https://www.googleapis.com/compute/v1/projects/neuromancer-seung-import/zones/us-east1-d/acceleratorTypes/nvidia-tesla-k80",
-            "acceleratorCount": 1
-          }
-        ],
         "Metadata": [
             {
               "key": "infrakit.clusterName",

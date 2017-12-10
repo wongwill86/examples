@@ -93,7 +93,7 @@ resources:
     - name: {{ env["deployment"] }}-network
       type: compute.v1.network
       properties:
-          IPv4Range: 172.31.16.0/20
+          IPv4Range: 172.31.16.0/16
     - name: {{ env["deployment"] }}-firewall
       type: compute.v1.firewall
       properties:

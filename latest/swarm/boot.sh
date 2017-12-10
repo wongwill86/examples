@@ -29,10 +29,18 @@ cat << EOF > /etc/docker/daemon.json
   , {{$element | jsonEncode}}
 {{end}}
 {{end}}
-]
+  ],
+  "log-driver": "json-file",
+  "log-opts": {
+    "max-size": "10m",
+    "max-file": "20"
+  },
+  "hosts": [ "fd://", "tcp://0.0.0.0:4243" ]
 }
 EOF
-kill -s HUP $(cat /var/run/docker.pid)  {{/* Reload the engine labels */}}
+
+service docker restart
+echo "Wait for Docker to come up"
 sleep 30
 
 echo ##### Set up Docker Swarm Mode  ##################################################

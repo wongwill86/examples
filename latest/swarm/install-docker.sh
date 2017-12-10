@@ -12,13 +12,17 @@ sudo usermod -aG docker {{ var "/local/docker/user" }}
 if [ -d "/var/log/upstart" ]; then
     # Upstart
     echo DOCKER_OPTS=\"-H tcp://0.0.0.0:4243 -H unix:///var/run/docker.sock\" >> /etc/default/docker
-    service docker restart
 else
     # Systemd
-    sed -i -e 's@ExecStart=/usr/bin/dockerd -H fd://@ExecStart=/usr/bin/dockerd -H fd:// -H tcp://0.0.0.0:4243@g' /lib/systemd/system/docker.service
-    systemctl daemon-reload
-    service docker restart
+    mkdir -p /etc/systemd/system/docker.service.d
+
+    echo '''
+    [Service]
+    ExecStart=
+    ExecStart=/usr/bin/dockerd
+    ''' > /etc/systemd/system/docker.service.d/override.conf
+
+	systemctl daemon-reload
 fi
 
-echo "Wait for Docker to come up"
-sleep 10
+# will restart to pick up service changes in boot.sh script

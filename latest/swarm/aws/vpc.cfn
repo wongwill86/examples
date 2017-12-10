@@ -78,27 +78,27 @@
         "ManagerIP0" : {
             "Description": "IP for manager node 0",
             "Type" : "String",
-            "Default" : "172.31.16.100"
+            "Default" : "172.31.255.250"
         },
         "ManagerIP1" : {
             "Description": "IP for manager node 1 (if available)",
             "Type" : "String",
-            "Default" : "172.31.16.101"
+            "Default" : "172.31.255.251"
         },
         "ManagerIP2" : {
             "Description": "IP for manager node 2 (if available)",
             "Type" : "String",
-            "Default" : "172.31.16.102"
+            "Default" : "172.31.255.252"
         },
         "ManagerIP3" : {
             "Description": "IP for manager node 3 (if available)",
             "Type" : "String",
-            "Default" : "172.31.16.103"
+            "Default" : "172.31.255.253"
         },
         "ManagerIP4" : {
             "Description": "IP for manager node 4 (if available)",
             "Type" : "String",
-            "Default" : "172.31.16.104"
+            "Default" : "172.31.255.254"
         }
     },
 
@@ -139,7 +139,7 @@
                 "cidr": "172.31.0.0/16"
             },
             "subnet1" : {
-                "cidr": "172.31.16.0/20"
+                "cidr": "172.31.16.0/16"
             }
         },
 

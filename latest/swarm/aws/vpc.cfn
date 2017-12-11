@@ -6,15 +6,18 @@
         "InfrakitConfigRoot" : {
             "Type" : "String",
             "Description" : "Root URL of the bootscript",
-            "Default" : "https://raw.githubusercontent.com/wongwill86/examples/air-tasks/latest/swarm/"
+            "Default" : "https://raw.githubusercontent.com/wongwill86/examples/air-tasks/latest/swarm/",
+            "MinLength": 1
         },
         "TagFieldUser": {
             "Description": "IAM username, also used as web auth Username",
-            "Type": "String"
+            "Type": "String",
+            "MinLength": 1
         },
         "TagFieldProject": {
             "Description": "i.e. what project and which run",
-            "Type": "String"
+            "Type": "String",
+            "MinLength": 1
         },
         "WebAuthPassword": {
             "Description": "Leave blank for no web authentication to portals",
@@ -48,57 +51,65 @@
         },
         "InstanceTypeManager" : {
             "Type" : "String",
-            "Description" : "Manager EC2 HVM instance type (t2.micro, m3.medium, etc).",
-            "AllowedValues" : [ "t2.micro","t2.small","t2.medium" ],
+            "Description" : "Manager EC2 HVM instance type (t2.large, t2.xlarge, t2.2xlarge ...).",
+            "AllowedValues" : [ "t2.large","t2.xlarge","t2.2xlarge" ],
             "ConstraintDescription" : "Must be a valid EC2 HVM instance type.",
-            "Default" : "t2.micro"
+            "Default" : "t2.large"
         },
         "InstanceTypeWorker" : {
             "Type" : "String",
             "Description" : "Worker EC2 HVM instance type (t2.micro, m3.medium, etc).",
-            "AllowedValues" : [ "t2.micro","t2.small","t2.medium" ],
+            "AllowedValues" : [ "t2.micro","t2.small","t2.medium", "p2.xlarge" ],
             "ConstraintDescription" : "Must be a valid EC2 HVM instance type.",
             "Default" : "t2.micro"
         },
         "MetadataExportTemplate" : {
             "Type" : "String",
             "Description" : "URL to configure the metadata plugin",
-            "Default" : "https://raw.githubusercontent.com/wongwill86/examples/air-tasks/latest/metadata/aws/export.ikt"
+            "Default" : "https://raw.githubusercontent.com/wongwill86/examples/air-tasks/latest/metadata/aws/export.ikt",
+            "MinLength": 1
         },
         "Infrakit" : {
             "Type" : "String",
             "Description" : "Docker image of Infrakit",
-            "Default" : "infrakit/devbundle:master-2662"
+            "Default" : "infrakit/devbundle:master-2662",
+            "MinLength": 1
         },
         "DockerComposeLocation" : {
             "Type" : "String",
             "Description" : "Location of the docker compose file to deploy to swarm",
-            "Default" : "https://raw.githubusercontent.com/wongwill86/air-tasks/master/docker/docker-compose-CeleryExecutor.yml"
+            "Default" : "https://raw.githubusercontent.com/wongwill86/air-tasks/master/docker/docker-compose-CeleryExecutor.yml",
+            "MinLength": 1
         },
         "ManagerIP0" : {
             "Description": "IP for manager node 0",
             "Type" : "String",
-            "Default" : "172.31.255.250"
+            "Default" : "172.31.255.250",
+            "MinLength": 1
         },
         "ManagerIP1" : {
             "Description": "IP for manager node 1 (if available)",
             "Type" : "String",
-            "Default" : "172.31.255.251"
+            "Default" : "172.31.255.251",
+            "MinLength": 1
         },
         "ManagerIP2" : {
             "Description": "IP for manager node 2 (if available)",
             "Type" : "String",
-            "Default" : "172.31.255.252"
+            "Default" : "172.31.255.252",
+            "MinLength": 1
         },
         "ManagerIP3" : {
             "Description": "IP for manager node 3 (if available)",
             "Type" : "String",
-            "Default" : "172.31.255.253"
+            "Default" : "172.31.255.253",
+            "MinLength": 1
         },
         "ManagerIP4" : {
             "Description": "IP for manager node 4 (if available)",
             "Type" : "String",
-            "Default" : "172.31.255.254"
+            "Default" : "172.31.255.254",
+            "MinLength": 1
         }
     },
 
@@ -144,13 +155,13 @@
         },
 
         "AWSInstanceType2Arch": {
-            "t2.micro": {
+            "t2.large": {
                 "Arch": "HVM64"
             },
-            "t2.small": {
+            "t2.xlarge": {
                 "Arch": "HVM64"
             },
-            "t2.medium": {
+            "t2.2xlarge": {
                 "Arch": "HVM64"
             }
         },
@@ -197,7 +208,7 @@
             "no" : {
                 "hasDocker" : "no",
                 "ami" : "AWSUbuntu16NoDocker",
-                "userdata" : "wget -qO- https://get.docker.com/ | sh \n"
+                "userdata" : "curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - &&\napt-key fingerprint 0EBFCD88 &&\nadd-apt-repository \"deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable\" &&\napt-get update &&\napt-get install docker-ce -y\n"
             },
             "yes" : {
                 "hasDocker" : "yes",
@@ -585,7 +596,7 @@
                     "Fn::Base64" : {
                         "Fn::Join" :
                         [ "", [
-                            "#!/bin/sh \n",
+                            "#!/bin/sh \nset -e\n",
                             {
                                 "Fn::FindInMap": [ "AMISelector", { "Ref" : "PreinstalledDockerAMI" }, "userdata" ]
                             },
@@ -620,7 +631,6 @@
                                " --var /infrakit/docker/image=", {"Ref":"Infrakit"}, " ",
                                {"Ref":"InfrakitConfigRoot"}, "/groups.json",
                                " | tee /var/lib/infrakit.boot | sh \n",
-                            "set -e \n",
                             "echo '", { "Ref" : "TagFieldUser" }, "' | docker secret create basic_auth_username - \n",
                             "echo '", { "Ref" : "WebAuthPassword" }, "' | docker secret create basic_auth_password - \n",
                             "echo '' | docker secret create ssl_certificate - \n",

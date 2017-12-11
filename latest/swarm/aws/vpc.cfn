@@ -6,15 +6,18 @@
         "InfrakitConfigRoot" : {
             "Type" : "String",
             "Description" : "Root URL of the bootscript",
-            "Default" : "https://raw.githubusercontent.com/wongwill86/examples/air-tasks/latest/swarm/"
+            "Default" : "https://raw.githubusercontent.com/wongwill86/examples/air-tasks/latest/swarm/",
+            "MinLength": 1
         },
         "TagFieldUser": {
             "Description": "IAM username, also used as web auth Username",
-            "Type": "String"
+            "Type": "String",
+            "MinLength": 1
         },
         "TagFieldProject": {
             "Description": "i.e. what project and which run",
-            "Type": "String"
+            "Type": "String",
+            "MinLength": 1
         },
         "WebAuthPassword": {
             "Description": "Leave blank for no web authentication to portals",
@@ -63,42 +66,50 @@
         "MetadataExportTemplate" : {
             "Type" : "String",
             "Description" : "URL to configure the metadata plugin",
-            "Default" : "https://raw.githubusercontent.com/wongwill86/examples/air-tasks/latest/metadata/aws/export.ikt"
+            "Default" : "https://raw.githubusercontent.com/wongwill86/examples/air-tasks/latest/metadata/aws/export.ikt",
+            "MinLength": 1
         },
         "Infrakit" : {
             "Type" : "String",
             "Description" : "Docker image of Infrakit",
-            "Default" : "infrakit/devbundle:master-2662"
+            "Default" : "infrakit/devbundle:master-2662",
+            "MinLength": 1
         },
         "DockerComposeLocation" : {
             "Type" : "String",
             "Description" : "Location of the docker compose file to deploy to swarm",
-            "Default" : "https://raw.githubusercontent.com/wongwill86/air-tasks/master/docker/docker-compose-CeleryExecutor.yml"
+            "Default" : "https://raw.githubusercontent.com/wongwill86/air-tasks/master/docker/docker-compose-CeleryExecutor.yml",
+            "MinLength": 1
         },
         "ManagerIP0" : {
             "Description": "IP for manager node 0",
             "Type" : "String",
-            "Default" : "172.31.255.250"
+            "Default" : "172.31.255.250",
+            "MinLength": 1
         },
         "ManagerIP1" : {
             "Description": "IP for manager node 1 (if available)",
             "Type" : "String",
-            "Default" : "172.31.255.251"
+            "Default" : "172.31.255.251",
+            "MinLength": 1
         },
         "ManagerIP2" : {
             "Description": "IP for manager node 2 (if available)",
             "Type" : "String",
-            "Default" : "172.31.255.252"
+            "Default" : "172.31.255.252",
+            "MinLength": 1
         },
         "ManagerIP3" : {
             "Description": "IP for manager node 3 (if available)",
             "Type" : "String",
-            "Default" : "172.31.255.253"
+            "Default" : "172.31.255.253",
+            "MinLength": 1
         },
         "ManagerIP4" : {
             "Description": "IP for manager node 4 (if available)",
             "Type" : "String",
-            "Default" : "172.31.255.254"
+            "Default" : "172.31.255.254",
+            "MinLength": 1
         }
     },
 

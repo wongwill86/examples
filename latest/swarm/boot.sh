@@ -10,6 +10,9 @@ set -o xtrace
 # Only for managers
 {{ if not (var "/local/infrakit/role/worker") }} {{ include "setup-volume.sh" }} {{ end }}
 
+echo ##### Set up Docker #############################################################
+{{ if var "/local/install/docker" }} {{ include "install-docker.sh" }} {{ end }}
+
 echo #### Label the engine ###########################################################
 {{ $dockerLabels := var "/local/docker/engine/labels" }}
 mkdir -p /etc/docker

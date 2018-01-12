@@ -13,9 +13,9 @@ DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::="--force-confdef" -
 apt-get install -y jq
 
 # nvidia-docker only supports stable docker releases, can't use script
-#wget -qO- https://get.docker.com/ | sh
+wget -qO- https://get.docker.com/ | sh
 
-apt install docker-ce -y
+#apt install docker-ce -y
 
 sudo usermod -aG docker {{ var "/local/docker/user" }}
 

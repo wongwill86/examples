@@ -18,3 +18,4 @@ set -o xtrace
 {{ include "boot.sh" }}
 
 # Append commands here to run other things that makes sense for workers
+sudo mount -t tmpfs tmpfs /tmp

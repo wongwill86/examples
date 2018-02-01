@@ -18,4 +18,5 @@ set -o xtrace
 {{ include "boot.sh" }}
 
 # Append commands here to run other things that makes sense for workers
+sudo apt install dnsmasq
 sudo mount -t tmpfs tmpfs /tmp

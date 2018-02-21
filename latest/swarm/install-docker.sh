@@ -15,8 +15,7 @@ apt-get install -y jq
 # nvidia-docker only supports stable docker releases, can't use script
 #wget -qO- https://get.docker.com/ | sh
 
-#apt install docker-ce -y
-apt install -y --allow-downgrades docker-ce=17.06.2~ce-0~ubuntu
+apt install docker-ce -y
 
 sudo usermod -aG docker {{ var "/local/docker/user" }}
 

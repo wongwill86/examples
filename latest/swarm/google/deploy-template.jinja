@@ -98,7 +98,7 @@ resources:
     - name: {{ env["deployment"] }}-network
       type: compute.v1.network
       properties:
-          IPv4Range: 172.31.16.0/16
+          IPv4Range: 172.31.0.0/16
     - name: {{ env["deployment"] }}-firewall
       type: compute.v1.firewall
       properties:
@@ -116,7 +116,7 @@ resources:
               - IPProtocol: tcp
               - IPProtocol: udp
           sourceRanges:
-              - 172.31.16.0/20
+              - 172.31.0.0/16
           network: $(ref.{{ env["deployment"] }}-network.selfLink)
     - name: {{ env["deployment"] }}-firewall-bootstrap-https
       type: compute.v1.firewall

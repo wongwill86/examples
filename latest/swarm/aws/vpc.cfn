@@ -78,7 +78,7 @@
         "DockerComposeLocation" : {
             "Type" : "String",
             "Description" : "Location of the docker compose file to deploy to swarm",
-            "Default" : "https://raw.githubusercontent.com/wongwill86/air-tasks/master/docker/docker-compose-CeleryExecutor.yml",
+            "Default" : "https://raw.githubusercontent.com/wongwill86/air-tasks/master/deploy/docker-compose-CeleryExecutor.yml",
             "MinLength": 1
         },
         "ManagerIP0" : {
@@ -150,7 +150,7 @@
                 "cidr": "172.31.0.0/16"
             },
             "subnet1" : {
-                "cidr": "172.31.16.0/16"
+                "cidr": "172.31.0.0/16"
             }
         },
 

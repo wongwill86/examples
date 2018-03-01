@@ -10,13 +10,16 @@ set -o xtrace
 # Only for managers
 {{ if not (var "/local/infrakit/role/worker") }} {{ include "setup-volume.sh" }} {{ end }}
 
-echo ##### Set up Docker #############################################################
-{{ if var "/local/install/docker" }} {{ include "install-docker.sh" }} {{ end }}
+if [ -f "/etc/docker_init_done" ]; then
+    echo "docker already setup"
+else
+    echo ##### Set up Docker #############################################################
+    {{ if var "/local/install/docker" }} {{ include "install-docker.sh" }} {{ end }}
 
-echo #### Label the engine ###########################################################
-{{ $dockerLabels := var "/local/docker/engine/labels" }}
-mkdir -p /etc/docker
-cat << EOF > /etc/docker/daemon.json
+    echo #### Label the engine ###########################################################
+    {{ $dockerLabels := var "/local/docker/engine/labels" }}
+    mkdir -p /etc/docker
+    cat << EOF > /etc/docker/daemon.json
 {
   "labels": [
 {{ if not (var `/local/infrakit/role/worker`) }}
@@ -39,18 +42,23 @@ cat << EOF > /etc/docker/daemon.json
 }
 EOF
 
-# Try to find NVIDIA devices, this may override /etc/docker/daemon.json
-if lspci | grep NVIDIA; then
-	echo "Found NVIDIA devices"
-	{{ include "install-nvidia-docker.sh" }}
-	# Move original daemon.json to a safe location to prepare for merge
-	mv /etc/docker/daemon.json /etc/docker/daemon-original.json
+    # Try to find NVIDIA devices, this may override /etc/docker/daemon.json
+    if lspci | grep NVIDIA; then
+        echo "Found NVIDIA devices"
+        {{ include "install-nvidia-docker.sh" }}
+        # Move original daemon.json to a safe location to prepare for merge
+        mv /etc/docker/daemon.json /etc/docker/daemon-original.json
 
-	# Merge original daemon-original.json with new infrakit labels deamon-infrakit.json
-	jq -s '.[0] * .[1]' /etc/docker/daemon-original.json /etc/docker/daemon.json.dpkg-dist > /etc/docker/daemon.json
+        # Merge original daemon-original.json with new infrakit labels deamon-infrakit.json
+        jq -s '.[0] * .[1]' /etc/docker/daemon-original.json /etc/docker/daemon.json.dpkg-dist > /etc/docker/daemon.json
+    fi
+
+    service docker restart
+
+    touch /etc/docker_init_done
+
 fi
 
-service docker restart
 echo "Wait for Docker to come up"
 sleep 30
 

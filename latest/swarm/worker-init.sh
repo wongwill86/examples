@@ -18,4 +18,6 @@ set -o xtrace
 {{ include "boot.sh" }}
 
 # Append commands here to run other things that makes sense for workers
+docker pull ranlu/agglomeration:latest
+docker pull ranlu/watershed:latest
 sudo mount -t tmpfs tmpfs /tmp

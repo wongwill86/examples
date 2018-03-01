@@ -33,6 +33,7 @@ else
     ExecStart=/usr/bin/dockerd
     ''' > /etc/systemd/system/docker.service.d/override.conf
 
+    systemctl disable docker
 	systemctl daemon-reload
 fi
 

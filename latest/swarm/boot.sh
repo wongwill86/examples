@@ -53,11 +53,11 @@ EOF
         jq -s '.[0] * .[1]' /etc/docker/daemon-original.json /etc/docker/daemon.json.dpkg-dist > /etc/docker/daemon.json
     fi
 
-    service docker restart
-
     touch /etc/docker_init_done
 
 fi
+
+service docker restart
 
 echo "Wait for Docker to come up"
 sleep 30

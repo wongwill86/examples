@@ -7,9 +7,9 @@ resources:
       properties:
           zone: us-east1-b
           image: infrakit/devbundle:master-2662
-          configRoot: https://raw.githubusercontent.com/wongwill86/examples/air-tasks/latest/swarm/
-          configURL: https://raw.githubusercontent.com/wongwill86/examples/air-tasks/latest/metadata/google/export.ikt
-          user: wwong
+          configRoot: https://raw.githubusercontent.com/wongwill86/examples/pychunkedgraph/latest/swarm/
+          configURL: https://raw.githubusercontent.com/wongwill86/examples/pychunkedgraph/latest/metadata/google/export.ikt
+          user: nkem
           #password:
           project: pipeline
           managerIP0: 172.31.255.250
@@ -18,7 +18,7 @@ resources:
           managerIP3: 172.31.255.253
           managerIP4: 172.31.255.254
           sizeManager: 3
-          sizeWorker: 1
+          sizeWorker: 200
           instanceTypeManager: n1-standard-4 # make sure instance has > 6 GB of ram for postgres deployment
-          instanceTypeWorker: f1-micro
-          composeLocation: https://raw.githubusercontent.com/wongwill86/air-tasks/master/deploy/docker-compose-CeleryExecutor.yml
+          instanceTypeWorker: n1-highmem-4
+          composeLocation: https://raw.githubusercontent.com/wongwill86/air-tasks/pcg-pinky100-v0/deploy/docker-compose-CeleryExecutor.yml

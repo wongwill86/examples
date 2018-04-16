@@ -19,6 +19,8 @@ set -o xtrace
 {{ var "/local/infrakit/role/manager" true }}
 {{ var "/local/infrakit/role/worker" false }}
 
+mkdir -p /var/lib/postgresql/data
+
 {{ include "boot.sh" }}
 
 # Append commands here to run other things that makes sense for managers

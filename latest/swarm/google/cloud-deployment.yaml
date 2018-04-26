@@ -17,7 +17,7 @@ resources:
           managerIP2: 172.31.255.252
           managerIP3: 172.31.255.253
           managerIP4: 172.31.255.254
-          sizeManager: 3
+          sizeManager: 1
           sizeWorker: 1
           instanceTypeManager: n1-standard-4 # make sure instance has > 6 GB of ram for postgres deployment
           instanceTypeWorker: f1-micro

@@ -15,6 +15,8 @@ set -o xtrace
 {{ var "/local/infrakit/role/worker" true }}
 {{ var "/local/infrakit/role/manager" false }}
 
+mount -t tmpfs tmpfs /tmp
+
 {{ include "boot.sh" }}
 
 # Append commands here to run other things that makes sense for workers

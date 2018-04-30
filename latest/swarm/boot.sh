@@ -24,9 +24,11 @@ else
   "labels": [
 {{ if (var `/local/infrakit/role/manager`) }}
 	"infrakit-role=manager"
+{{ end }}
 {{ if (var `/local/infrakit/role/database`) }}
 	"infrakit-role=database"
-{{ else }}
+{{ end }}
+{{ if (var `/local/infrakit/role/worker`) }}
 	"infrakit-role=worker"
 {{ end }}
 {{ if not (eq 0 (len $dockerLabels)) }}

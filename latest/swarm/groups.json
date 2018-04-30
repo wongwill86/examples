@@ -107,7 +107,7 @@ the instances it manages reside.
                     ]
                 },
                 "Flavor": {
-                    "Plugin": "swarm/database",
+                    "Plugin": "swarm/manager",
                     "Properties": {
                         "Attachments" : {
                             "{{ $databaseIP0 }}": [

@@ -11,5 +11,6 @@ Google specific - This is where we introspect the environment and export the val
 
 {
     "Managers" : {{ include "manager.json" }},
+    "Databases" : {{ include "database.json" }},
     "Workers"  : {{ include "worker.json" }}
 }

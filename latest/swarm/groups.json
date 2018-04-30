@@ -19,6 +19,7 @@ the instances it manages reside.
 {{ $managerIP2 := var `/cluster/swarm/manager/ips/2` }}
 {{ $managerIP3 := var `/cluster/swarm/manager/ips/3` }}
 {{ $managerIP4 := var `/cluster/swarm/manager/ips/4` }}
+{{ $databaseIP0 := var `/cluster/swarm/database/ips/0` }}
 
 {{ $prov := (var `/cluster/provider`) }}
 {{ $managerSize := int (var `/cluster/size/manager`) }}
@@ -108,8 +109,8 @@ the instances it manages reside.
                     "Plugin": "swarm/database",
                     "Properties": {
                         "Attachments" : {
-                            "{{ $managerIP0 }}": [
-                              { "ID": "{{ $managerIP0 }}", "Type": "ebs" }
+                            "{{ $databaseIP0 }}": [
+                              { "ID": "{{ $databaseIP0 }}", "Type": "ebs" }
                             ]
                         },
                         "InitScriptTemplateURL": "{{ $databaseInit }}",

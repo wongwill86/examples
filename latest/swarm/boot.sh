@@ -8,7 +8,7 @@ set -o xtrace
 
 ##### Set up volumes #################################################################
 # Only for managers
-{{ if not (var "/local/infrakit/role/worker") }} {{ include "setup-volume.sh" }} {{ end }}
+{{ if (var "/local/infrakit/role/manager") }} {{ include "setup-volume.sh" }} {{ end }}
 
 if [ -f "/etc/docker_init_done" ]; then
     echo "docker already setup"
@@ -22,8 +22,10 @@ else
     cat << EOF > /etc/docker/daemon.json
 {
   "labels": [
-{{ if not (var `/local/infrakit/role/worker`) }}
+{{ if (var `/local/infrakit/role/manager`) }}
 	"infrakit-role=manager"
+{{ if (var `/local/infrakit/role/database`) }}
+	"infrakit-role=database"
 {{ else }}
 	"infrakit-role=worker"
 {{ end }}
@@ -77,6 +79,6 @@ echo "Join Swarm: $(docker swarm join --token {{ var "/local/docker/swarm/join/t
 {{ end }}
 
 echo ##### Infrakit Services  #########################################################
-{{ if not (var "/local/infrakit/role/worker") }}
+{{ if (var "/local/infrakit/role/manager") }}
 {{ include "infrakit.sh" }}
 {{ end }}{{/* if running infrakit */}}

@@ -56,9 +56,12 @@ resources:
                         --var /cluster/swarm/manager/ips/2={{ properties["managerIP2"] }} \
                         --var /cluster/swarm/manager/ips/3={{ properties["managerIP3"] }} \
                         --var /cluster/swarm/manager/ips/4={{ properties["managerIP4"] }} \
+                        --var /cluster/swarm/database/ips/0={{ properties["databaseIP0"] }} \
                         --var /cluster/size/manager={{ properties["sizeManager"] }} \
+                        --var /cluster/size/database={{ properties["sizeDatabase"] }} \
                         --var /cluster/size/worker={{ properties["sizeWorker"] }} \
                         --var /cluster/instanceType/manager={{ properties["instanceTypeManager"] }} \
+                        --var /cluster/instanceType/database={{ properties["instanceTypeDatabase"] }} \
                         --var /cluster/instanceType/worker={{ properties["instanceTypeWorker"] }} \
                         --var /infrakit/config/root={{ properties["configRoot"] }} \
                         --var /infrakit/metadata/configURL={{ properties["configURL"] }} \

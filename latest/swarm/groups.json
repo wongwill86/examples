@@ -97,6 +97,36 @@ the instances it manages reside.
     {
         "Plugin": "group",
         "Properties": {
+            "ID": "database",
+            "Properties": {
+                "Allocation": {
+                    "LogicalIDs": [
+                            "{{ $databaseIP0 }}"
+                    ]
+                },
+                "Flavor": {
+                    "Plugin": "swarm/database",
+                    "Properties": {
+                        "Attachments" : {
+                            "{{ $managerIP0 }}": [
+                              { "ID": "{{ $managerIP0 }}", "Type": "ebs" }
+                            ]
+                        },
+                        "InitScriptTemplateURL": "{{ $databaseInit }}",
+                        "SwarmJoinIP": "{{ $swarmLeaderIP }}",
+                        "Docker" : {
+                            "Host" : "{{ $dockerEngine }}"
+                        }
+                    }
+                },
+                "Instance": {{ $myGroups.Databases | jsonEncode }}
+            }
+        }
+    }
+    ,
+    {
+        "Plugin": "group",
+        "Properties": {
             "ID": "workers-worker",
             "Properties": {
                 "Allocation": {

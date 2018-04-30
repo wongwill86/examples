@@ -21,9 +21,12 @@ queried later even after the bootstrapping (cloudformation) completes.
 {{ var `/cluster/swarm/manager/ips/2` ( metadata `vars/cluster/swarm/manager/ips/2` )}}
 {{ var `/cluster/swarm/manager/ips/3` ( metadata `vars/cluster/swarm/manager/ips/3` )}}
 {{ var `/cluster/swarm/manager/ips/4` ( metadata `vars/cluster/swarm/manager/ips/4` )}}
+{{ var `/cluster/swarm/database/ips/0` ( metadata `vars/cluster/swarm/database/ips/0` )}}
 {{ var `/cluster/size/manager`  ( metadata `vars/cluster/size/manager` )}}
+{{ var `/cluster/size/database`  ( metadata `vars/cluster/size/database` )}}
 {{ var `/cluster/size/worker`   ( metadata `vars/cluster/size/worker` )}}
 {{ var `/cluster/instanceType/manager` ( metadata `vars/cluster/instanceType/manager` )}}
+{{ var `/cluster/instanceType/database` ( metadata `vars/cluster/instanceType/database` )}}
 {{ var `/cluster/instanceType/worker`  ( metadata `vars/cluster/instanceType/worker` )}}
 {{ var `/cluster/tag/user`            ( metadata `vars/cluster/tag/user` )}}
 {{ var `/cluster/tag/project`         ( metadata `vars/cluster/tag/project` )}}

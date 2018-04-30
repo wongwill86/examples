@@ -14,11 +14,12 @@ set -o xtrace
 
 {{ var "/local/infrakit/role/worker" true }}
 {{ var "/local/infrakit/role/manager" false }}
+{{ var "/local/infrakit/role/database" false }}
 
-sudo mount -t tmpfs tmpfs /tmp
+mount -t tmpfs tmpfs /tmp
 
 {{ include "boot.sh" }}
 
 # Append commands here to run other things that makes sense for workers
-docker pull ranlu/agglomeration:latest
-docker pull ranlu/watershed:latest
+#docker pull ranlu/agglomeration:latest
+#docker pull ranlu/watershed:latest

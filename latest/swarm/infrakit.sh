@@ -51,16 +51,19 @@ docker run --rm {{$dockerMounts}} {{$dockerEnvs}} {{$dockerImage}} \
        cluster/swarm/manager/ips/2={{ var `/cluster/swarm/manager/ips/2` }} \
        cluster/swarm/manager/ips/3={{ var `/cluster/swarm/manager/ips/3` }} \
        cluster/swarm/manager/ips/4={{ var `/cluster/swarm/manager/ips/4` }} \
+       cluster/swarm/database/ips/0={{ var `/cluster/swarm/database/ips/0` }} \
        cluster/size/manager={{ var `/cluster/size/manager` }} \
+       cluster/size/database={{ var `/cluster/size/database` }} \
        cluster/size/worker={{ var `/cluster/size/worker` }} \
        cluster/instanceType/manager={{ var `/cluster/instanceType/manager` }} \
+       cluster/instanceType/database={{ var `/cluster/instanceType/database` }} \
        cluster/instanceType/worker={{ var `/cluster/instanceType/worker` }} \
        cluster/tag/user={{ var `/cluster/tag/user` }} \
        cluster/tag/project={{ var `/cluster/tag/project` }} \
 
 docker run --rm {{$dockerMounts}} {{$dockerEnvs}} {{$dockerImage}} \
 	infrakit remote set manager-cluster \
-	{{ list (var `/cluster/swarm/manager/ips/0`) (var `/cluster/swarm/manager/ips/1`) (var `/cluster/swarm/manager/ips/2`) (var `/cluster/swarm/manager/ips/3`) (var `/cluster/swarm/manager/ips/4`) | join ":24864," }}:24864
+	{{ list (var `/cluster/swarm/manager/ips/0`) (var `/cluster/swarm/manager/ips/1`) (var `/cluster/swarm/manager/ips/2`) (var `/cluster/swarm/manager/ips/3`) (var `/cluster/swarm/manager/ips/4`) (var `/cluster/swarm/database/ips/0`) | join ":24864," }}:24864
 
 echo "Rendering a view of the config groups.json for debugging."
 docker run --rm {{$dockerMounts}} {{$dockerEnvs}} {{$dockerImage}} infrakit template {{var `/infrakit/config/root`}}/groups.json

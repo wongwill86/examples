@@ -17,9 +17,8 @@ set -o xtrace
 {{ var "/local/docker/swarm/join/token" SWARM_JOIN_TOKENS.Manager }}
 
 {{ var "/local/infrakit/role/manager" true }}
+{{ var "/local/infrakit/role/database" false }}
 {{ var "/local/infrakit/role/worker" false }}
-
-mkdir -p /var/lib/postgresql/data
 
 {{ include "boot.sh" }}
 

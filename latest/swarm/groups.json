@@ -27,6 +27,7 @@ the instances it manages reside.
 {{ $dockerEngine := `unix:///var/run/docker.sock` }} {{/* for this flavor to connect to */}}
 
 {{ $managerInit := cat (var `/infrakit/config/root`) `/manager-init.sh` | nospace }}
+{{ $databaseInit := cat (var `/infrakit/config/root`) `/database-init.sh` | nospace }}
 {{ $workerInit := cat (var `/infrakit/config/root`) `/worker-init.sh` | nospace }}
 
 {{ $myGroups := include (cat (var `/cluster/provider`) `/groups.json` | nospace) | jsonDecode }}

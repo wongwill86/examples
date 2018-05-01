@@ -21,5 +21,5 @@ mount -t tmpfs tmpfs /tmp
 {{ include "boot.sh" }}
 
 # Append commands here to run other things that makes sense for workers
-#docker pull ranlu/agglomeration:latest
-#docker pull ranlu/watershed:latest
+docker pull ranlu/agglomeration:basil_10k
+docker pull ranlu/watershed:basil_10k

@@ -10,7 +10,7 @@ set -o xtrace
 
 {{ var "/local/docker/engine/labels" INFRAKIT_LABELS }}
 {{ var "/local/docker/swarm/join/addr" SWARM_MANAGER_ADDR }}
-{{ var "/local/docker/swarm/join/token" SWARM_JOIN_TOKENS.Manager }}
+{{ var "/local/docker/swarm/join/token" SWARM_JOIN_TOKENS.Worker }}
 
 {{ var "/local/infrakit/role/manager" false }}
 {{ var "/local/infrakit/role/database" true }}

@@ -17,7 +17,7 @@ set -o xtrace
 {{ var "/local/infrakit/role/worker" false }}
 
 mkdir -p /var/lib/mysql
-mount -t tmpfs tmpfs /var/lib/mysql
+#mount -t tmpfs tmpfs /var/lib/mysql
 
 {{ include "boot.sh" }}
 

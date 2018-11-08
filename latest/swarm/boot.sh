@@ -42,7 +42,7 @@ else
     "max-size": "10m",
     "max-file": "20"
   },
-  "hosts": [ "fd://", "tcp://0.0.0.0:4243" ]
+  "hosts": [ "unix:///var/run/docker.sock", "tcp://0.0.0.0:4243" ]
 }
 EOF
 

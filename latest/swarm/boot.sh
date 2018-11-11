@@ -34,8 +34,7 @@ cat << EOF > /etc/docker/daemon.json
   "log-opts": {
     "max-size": "10m",
     "max-file": "20"
-  },
-  "hosts": [ "fd://", "tcp://0.0.0.0:4243" ]
+  }
 }
 EOF
 

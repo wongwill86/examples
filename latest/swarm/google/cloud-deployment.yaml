@@ -5,13 +5,13 @@ resources:
     - name: deploy
       type: deploy-template.jinja
       properties:
-          zone: us-east1-b
+          zone: us-east1-c
           image: infrakit/devbundle:master-2662
-          configRoot: https://raw.githubusercontent.com/wongwill86/examples/air-tasks/latest/swarm/
-          configURL: https://raw.githubusercontent.com/wongwill86/examples/air-tasks/latest/metadata/google/export.ikt
-          user: wwong
+          configRoot: https://raw.githubusercontent.com/wongwill86/examples/nick/latest/swarm/
+          configURL: https://raw.githubusercontent.com/wongwill86/examples/nick/latest/metadata/google/export.ikt
+          user: nturner
           #password:
-          project: pipeline
+          project: nick
           managerIP0: 172.31.255.250
           managerIP1: 172.31.255.251
           managerIP2: 172.31.255.252
@@ -21,4 +21,4 @@ resources:
           sizeWorker: 1
           instanceTypeManager: n1-standard-4 # make sure instance has > 6 GB of ram for postgres deployment
           instanceTypeWorker: f1-micro
-          composeLocation: https://raw.githubusercontent.com/wongwill86/air-tasks/master/deploy/docker-compose-CeleryExecutor.yml
+          composeLocation: https://raw.githubusercontent.com/wongwill86/air-tasks/nick/deploy/docker-compose-CeleryExecutor.yml

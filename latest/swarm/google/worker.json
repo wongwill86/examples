@@ -28,7 +28,7 @@ Config for workers on Google
         "Disks": [{
           "Boot": true,
           "SizeGb": 10,
-          "Image": "https://www.googleapis.com/compute/v1/projects/ubuntu-os-cloud/global/images/ubuntu-1604-xenial-v20181023",
+          "Image": "https://www.googleapis.com/compute/v1/projects/ubuntu-os-cloud/global/images/ubuntu-1604-xenial-v20181204",
           "Type": "pd-standard"
         }],
         "Scopes": [

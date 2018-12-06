@@ -35,7 +35,7 @@ cat << EOF > /etc/docker/daemon.json
     "max-size": "10m",
     "max-file": "20"
   },
-  "hosts": [ "fd://", "tcp://0.0.0.0:4243" ]
+  "hosts": [ "tcp://0.0.0.0:4243" ]
 }
 EOF
 

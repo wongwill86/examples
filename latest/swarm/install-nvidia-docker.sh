@@ -10,11 +10,11 @@ sudo add-apt-repository ppa:graphics-drivers/ppa -y
 apt-get update
 
 if ! nvidia-smi; then
-  apt install nvidia-387 -y
+  apt install nvidia-415 -y
 else
   echo 'nvidia-smi already installed, not installing drivers'
 fi
 
 # Install nvidia-docker2 
 sudo apt-get update
-DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" install nvidia-387 nvidia-docker2
+DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" install nvidia-415 nvidia-docker2

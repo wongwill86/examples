@@ -27,7 +27,7 @@ Instance plugin config for managers on Google
         "MachineType": "{{ var `/cluster/instanceType/manager` }}",
         "Disks": [{
           "Boot": true,
-          "SizeGb": 30,
+          "SizeGb": 200,
           "Image": "https://www.googleapis.com/compute/v1/projects/ubuntu-os-cloud/global/images/ubuntu-1604-xenial-v20190325",
           "Type": "pd-standard"
         }],

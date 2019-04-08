@@ -1,6 +1,6 @@
 resources:
     #- name: {{ env["deployment"] }}-bootstrap
-    - name: {{ env["project"] }}-bootstrap
+    - name: {{ properties["project"] }}-bootstrap
       type: compute.v1.instance
       properties:
           zone: {{ properties["zone"] }}
@@ -20,7 +20,7 @@ resources:
           metadata:
               items:
                   - key: infrakit--scope
-                    value: {{ env["project"] }}
+                    value: {{ properties["project"] }}
                   - key: infrakit--group
                     value: managers
                   - key: infrakit--role
@@ -52,7 +52,7 @@ resources:
                         --var /cluster/provider=google \
                         --var /cluster/tag/user={{ properties["user" ] }} \
                         --var /cluster/tag/project={{ properties["project" ] }} \
-                        --var /cluster/name={{ env["project" ] }} \
+                        --var /cluster/name={{ properties["project" ] }} \
                         --var /cluster/swarm/manager/ips/0={{ properties["managerIP0"] }} \
                         --var /cluster/swarm/manager/ips/1={{ properties["managerIP1"] }} \
                         --var /cluster/swarm/manager/ips/2={{ properties["managerIP2"] }} \
@@ -79,9 +79,10 @@ resources:
                            sleep 10;
                         done
                         wget -O compose.yml {{ properties["composeLocation"] }}
-                        docker stack deploy -c compose.yml {{ env["project"] }}
+                        docker stack deploy -c compose.yml {{ properties["project"] }}
           networkInterfaces:
-              - network: $(ref.{{ env["project"] }}-network.selfLink)
+              #- network: $(ref.{{ properties["project"] }}-network.selfLink)
+              - network: $(ref.{{ properties["project"] }}-network)
                 networkIP: {{ properties["managerIP0"] }}
                 accessConfigs:
                  - type: ONE_TO_ONE_NAT

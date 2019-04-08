@@ -17,8 +17,8 @@ resources:
           managerIP2: 10.128.15.251
           managerIP3: 10.128.15.252
           managerIP4: 10.128.15.253
-          sizeManager: 3
+          sizeManager: 1
           sizeWorker: 1
-          instanceTypeManager: n1-standard-8 # make sure instance has > 6 GB of ram for postgres deployment
+          instanceTypeManager: n1-standard-16
           instanceTypeWorker: f1-micro
           composeLocation: https://raw.githubusercontent.com/wongwill86/air-tasks/nick/deploy/docker-compose-CeleryExecutor.yml

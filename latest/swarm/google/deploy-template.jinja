@@ -1,6 +1,5 @@
 resources:
-    #- name: {{ env["deployment"] }}-bootstrap
-    - name: {{ properties["project"] }}-bootstrap
+    - name: {{ env["deployment"] }}-bootstrap
       type: compute.v1.instance
       properties:
           zone: {{ properties["zone"] }}
@@ -11,7 +10,6 @@ resources:
                 autoDelete: true
                 initializeParams:
                     sourceImage: https://www.googleapis.com/compute/v1/projects/ubuntu-os-cloud/global/images/ubuntu-1604-xenial-v20190325
-                    diskSizeGb: 50
           tags:
               items:
                   - princeton-access
@@ -20,7 +18,7 @@ resources:
           metadata:
               items:
                   - key: infrakit--scope
-                    value: {{ properties["project"] }}
+                    value: {{ env["deployment"] }}
                   - key: infrakit--group
                     value: managers
                   - key: infrakit--role
@@ -52,7 +50,7 @@ resources:
                         --var /cluster/provider=google \
                         --var /cluster/tag/user={{ properties["user" ] }} \
                         --var /cluster/tag/project={{ properties["project" ] }} \
-                        --var /cluster/name={{ properties["project" ] }} \
+                        --var /cluster/name={{ env["deployment" ] }} \
                         --var /cluster/swarm/manager/ips/0={{ properties["managerIP0"] }} \
                         --var /cluster/swarm/manager/ips/1={{ properties["managerIP1"] }} \
                         --var /cluster/swarm/manager/ips/2={{ properties["managerIP2"] }} \
@@ -79,10 +77,9 @@ resources:
                            sleep 10;
                         done
                         wget -O compose.yml {{ properties["composeLocation"] }}
-                        docker stack deploy -c compose.yml {{ properties["project"] }}
+                        docker stack deploy -c compose.yml {{ env["deployment"] }}
           networkInterfaces:
-              #- network: $(ref.{{ properties["project"] }}-network.selfLink)
-              - network: $(ref.{{ properties["project"] }}-network)
+              - network: $(ref.{{ env["deployment"] }}-network.selfLink)
                 networkIP: {{ properties["managerIP0"] }}
                 accessConfigs:
                  - type: ONE_TO_ONE_NAT
@@ -98,41 +95,41 @@ resources:
                     - https://www.googleapis.com/auth/trace.append
                     - https://www.googleapis.com/auth/devstorage.read_only
                     - https://www.googleapis.com/auth/cloud.useraccounts.readonly
-#    - name: {{ env["deployment"] }}-network
-#      type: compute.v1.network
-#      properties:
-#          autoCreateSubnetworks: true
-#    - name: {{ env["deployment"] }}-firewall
-#      type: compute.v1.firewall
-#      properties:
-#          allowed:
-#              - IPProtocol: tcp
-#                ports:
-#                    - 22
-#                    - 65535
-#                    - 24864
-#          network: $(ref.{{ env["deployment"] }}-network.selfLink)
-#    - name: {{ env["deployment"] }}-firewall-internal
-#      type: compute.v1.firewall
-#      properties:
-#          allowed:
-#              - IPProtocol: tcp
-#              - IPProtocol: udp
-#          sourceRanges:
-#              - 10.128.0.0/20
-#          network: $(ref.{{ env["deployment"] }}-network.selfLink)
-#    - name: {{ env["deployment"] }}-firewall-bootstrap-https
-#      type: compute.v1.firewall
-#      properties:
-#          allowed:
-#              - IPProtocol: tcp
-#                ports:
-#                    - 443
-#          sourceRanges:
-#              - 128.112.0.0/16
-#              - 140.180.0.0/16
-#              - 204.153.48.0/23
-#              - 66.180.176.0/24
-#              - 66.180.180.0/22 
-#          network: $(ref.{{ env["deployment"] }}-network.selfLink)
+    - name: {{ env["deployment"] }}-network
+      type: compute.v1.network
+      properties:
+          autoCreateSubnetworks: true
+    - name: {{ env["deployment"] }}-firewall
+      type: compute.v1.firewall
+      properties:
+          allowed:
+              - IPProtocol: tcp
+                ports:
+                    - 22
+                    - 65535
+                    - 24864
+          network: $(ref.{{ env["deployment"] }}-network.selfLink)
+    - name: {{ env["deployment"] }}-firewall-internal
+      type: compute.v1.firewall
+      properties:
+          allowed:
+              - IPProtocol: tcp
+              - IPProtocol: udp
+          sourceRanges:
+              - 10.128.0.0/20
+          network: $(ref.{{ env["deployment"] }}-network.selfLink)
+    - name: {{ env["deployment"] }}-firewall-bootstrap-https
+      type: compute.v1.firewall
+      properties:
+          allowed:
+              - IPProtocol: tcp
+                ports:
+                    - 443
+          sourceRanges:
+              - 128.112.0.0/16
+              - 140.180.0.0/16
+              - 204.153.48.0/23
+              - 66.180.176.0/24
+              - 66.180.180.0/22 
+          network: $(ref.{{ env["deployment"] }}-network.selfLink)
 ## vim: set filetype=yaml:
